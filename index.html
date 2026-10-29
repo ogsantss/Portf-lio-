@@ -1,0 +1,1279 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Portfólio de Gabriel Souza: dados, governança e machine learning.">
+<style>
+  /* base equivalente à que o Artifact injeta */
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Gabriel · Portfólio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: personagem ilustrado no topo; abaixo, um jogo que popula o "banco de dados de mim" e o diagrama que abre telas cheias */
+:root {
+  --bg: #040404;
+  --bg-2: #0b0b0b;
+  --bg-3: #121211;
+  --line: #1e1d1b;
+  --fg: #ebe7e0;
+  --muted: #7f786f;
+  --steel: #9aa3ad;
+  --sand: #c2a27c;
+  --ok: #a9b89a;
+  --err: #c47a66;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); overflow-x: hidden; }
+body.locked { overflow: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+}
+header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.logo { font: 800 20px/1 var(--display); letter-spacing: -0.02em; color: var(--fg); text-decoration: none; }
+.logo span { color: var(--sand); }
+nav { display: flex; gap: 4px; flex-wrap: wrap; }
+nav a { font: 500 12px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-decoration: none; padding: 8px 10px; border-radius: 6px; }
+nav a:hover, nav a:focus-visible { color: var(--fg); background: var(--bg-2); outline: none; }
+
+/* Hero */
+.hero { position: relative; height: clamp(540px, 84vh, 800px); overflow: hidden; }
+#field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: crosshair; }
+.hero::after {
+  content: ""; position: absolute; z-index: 1; top: 10%; bottom: 10%; right: 0; width: 2px; pointer-events: none;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--steel) 80%, white), transparent);
+  box-shadow: 0 0 28px 6px color-mix(in srgb, var(--steel) 30%, transparent);
+}
+.holo-tag {
+  position: absolute; z-index: 2; top: 20px; right: max(20px, env(safe-area-inset-right, 0px));
+  font: 400 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+}
+.rv { transition: opacity .9s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
+.rv.pending { opacity: 0; transform: translateY(28px); }
+.hero-copy { will-change: transform, opacity; }
+.doc-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font: 500 11px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.doc-meta span:first-child { color: var(--sand); }
+.pii { --pii-c: var(--fg); position: relative; border-radius: 3px; outline: none; transition: color .4s ease, background-color .4s ease, box-shadow .4s ease; }
+h1 .pii { --pii-c: var(--sand); color: var(--pii-c); }
+.lede .pii { color: var(--pii-c); text-decoration: underline dashed color-mix(in srgb, var(--sand) 55%, transparent); text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.redact .pii { color: color-mix(in srgb, var(--pii-c) 45%, transparent); text-decoration-color: color-mix(in srgb, var(--muted) 40%, transparent); cursor: help; }
+.redact .pii:hover, .redact .pii:focus-visible { color: var(--pii-c); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.switch {
+  display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  font: 500 12px/1 var(--mono); color: var(--fg); background: none; border: 0; padding: 6px 0;
+}
+.switch .track { width: 34px; height: 20px; border-radius: 999px; background: var(--bg-3); border: 1px solid var(--line); position: relative; transition: background-color .3s; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), background-color .3s; }
+.switch[aria-checked="true"] .track { background: color-mix(in srgb, var(--sand) 25%, var(--bg-3)); border-color: var(--sand); }
+.switch[aria-checked="true"] i { transform: translateX(14px); background: var(--sand); }
+.switch:focus-visible { outline: 2px solid var(--steel); outline-offset: 4px; border-radius: 4px; }
+
+.hero-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; padding-block: 48px; pointer-events: none; }
+.hero-copy > * { pointer-events: auto; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--sand); }
+h1 { font: 800 clamp(56px, 11vw, 148px)/0.88 var(--display); letter-spacing: -0.045em; margin: 0; max-width: 8ch; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--sand); }
+.lede { max-width: 40ch; color: var(--muted); margin: 0; font-size: 17px; }
+.lede strong { color: var(--fg); font-weight: 600; }
+.btn { font: 600 14px/1 var(--body); color: var(--bg); background: var(--sand); border: 0; border-radius: 999px; padding: 12px 18px; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+.btn:hover { filter: brightness(1.08); }
+.btn:focus-visible { outline: 2px solid var(--steel); outline-offset: 3px; }
+.hint { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+.morphs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chip { font: 500 12px/1 var(--mono); color: var(--fg); background: var(--bg-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
+.chip[aria-pressed="true"] { border-color: var(--steel); color: var(--sand); }
+.chip:hover { border-color: var(--steel); }
+.chip:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+
+/* Seção explorar */
+.explore { border-top: 1px solid var(--line); }
+.explore-head { padding-block: 64px 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.explore-head h2 { font: 800 clamp(36px, 6vw, 72px)/0.95 var(--display); letter-spacing: -0.035em; margin: 0; max-width: 12ch; text-wrap: balance; }
+.explore-head h2 em { font-style: normal; color: var(--sand); }
+.explore-head p { margin: 0; max-width: 40ch; color: var(--muted); }
+code { font: 500 13px var(--mono); color: var(--fg); background: var(--bg-2); padding: 2px 6px; border-radius: 4px; }
+
+/* Jogo */
+.game-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--bg-2); margin-bottom: 20px; }
+.hud { display: grid; grid-template-columns: 1fr auto; gap: 12px 24px; padding: 16px 20px; border-bottom: 1px solid var(--line); align-items: center; }
+.q { font: 500 15px/1.3 var(--mono); color: var(--muted); min-width: 0; }
+.q .kw { color: var(--steel); }
+.q b { color: var(--sand); font-weight: 500; }
+.hud-stats { display: flex; gap: 20px; align-items: center; font: 400 12px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.hud-stats b { font: 500 18px/1 var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; letter-spacing: 0; margin-left: 6px; }
+.hearts { display: flex; gap: 4px; }
+.hearts svg { width: 20px; height: 18px; }
+.prog { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.prog li { display: flex; align-items: center; gap: 8px; font: 400 12px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+.prog li.cur { border-color: var(--sand); color: var(--fg); }
+.prog li.ok { border-color: color-mix(in srgb, var(--ok) 50%, var(--line)); color: var(--ok); }
+.pips { display: flex; gap: 3px; }
+.pips i { width: 7px; height: 7px; border-radius: 2px; background: var(--bg-3); }
+.pips i.on { background: var(--sand); }
+.prog li.ok .pips i { background: var(--ok); }
+.stage { position: relative; height: 460px; touch-action: none; cursor: none; outline: none; }
+.stage.idle { cursor: default; }
+#gameCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.overlay { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; text-align: center; background: color-mix(in srgb, var(--bg) 72%, transparent); padding: 24px; }
+.overlay > div { display: grid; gap: 12px; justify-items: center; max-width: 460px; }
+.overlay h3 { font: 800 clamp(30px, 5vw, 46px)/1 var(--display); letter-spacing: -0.03em; margin: 0; }
+.overlay h3 em { font-style: normal; color: var(--sand); }
+.overlay p { margin: 0; color: var(--muted); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font: 400 12px/1.4 var(--mono); color: var(--muted); }
+.legend span { display: flex; gap: 6px; align-items: center; }
+.legend svg { width: 22px; height: 22px; }
+
+/* Diagrama */
+.board-wrap { padding-bottom: 72px; }
+.board {
+  position: relative; height: 900px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--line) 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+.board svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.rel { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 5 5; transition: stroke .2s; }
+.rel.hot { stroke: var(--steel); stroke-dasharray: none; stroke-width: 2; }
+.card-label { font: 500 11px var(--mono); fill: var(--muted); }
+.card-label.hot { fill: var(--sand); }
+.tbl { position: absolute; width: 230px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px -12px rgb(0 0 0 / .6); user-select: none; transition: border-color .2s, box-shadow .3s; }
+.tbl:hover, .tbl.hot, .tbl:focus-within { border-color: var(--steel); }
+.tbl.flash { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sand) 45%, transparent); }
+.tbl.committed { border-color: color-mix(in srgb, var(--ok) 60%, var(--line)); }
+.tbl.committed .tbl-head small { color: var(--ok); }
+.tbl-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); cursor: grab; touch-action: none; font: 500 13px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.tbl-head:active { cursor: grabbing; }
+.tbl-head i { width: 8px; height: 8px; border-radius: 2px; background: var(--sand); flex: none; }
+.tbl-head small { margin-left: auto; color: var(--muted); font-size: 10px; letter-spacing: 0; text-transform: none; }
+.tbl ul { list-style: none; margin: 0; padding: 8px 12px; display: flex; flex-direction: column; gap: 4px; font: 400 12px/1.4 var(--mono); }
+.tbl li { display: flex; gap: 8px; color: var(--fg); }
+.tbl li b { font-weight: 500; width: 22px; flex: none; color: var(--sand); font-size: 10px; padding-top: 1px; }
+.tbl li span:last-child { margin-left: auto; color: var(--muted); }
+.tbl .run { display: flex; width: 100%; justify-content: space-between; align-items: center; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--steel); font: 500 12px/1 var(--mono); padding: 11px 12px; cursor: pointer; border-radius: 0 0 10px 10px; }
+.tbl .run:hover, .tbl .run:focus-visible { background: var(--bg-3); color: var(--sand); outline: none; }
+
+/* Telas */
+.screen {
+  position: fixed; inset: 0; z-index: 20; background: var(--bg); overflow-y: auto;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  clip-path: circle(0 at var(--ox, 50%) var(--oy, 50%));
+  transition: clip-path .6s cubic-bezier(.7, 0, .2, 1);
+}
+.screen.open { clip-path: circle(150% at var(--ox, 50%) var(--oy, 50%)); }
+.screen-bar { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); }
+.screen-bar .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
+.query { font: 500 13px/1.4 var(--mono); color: var(--muted); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex: 1; }
+.query .kw { color: var(--steel); }
+.query .caret { display: inline-block; width: 7px; height: 14px; background: var(--sand); vertical-align: -2px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.back { flex: none; }
+.screen-body { padding-block: 56px 96px; display: flex; flex-direction: column; gap: 28px; }
+.screen-body .meta { font: 400 12px/1 var(--mono); color: var(--muted); }
+.screen-body h2 { font: 800 clamp(44px, 8vw, 104px)/0.92 var(--display); letter-spacing: -0.04em; margin: 0; text-wrap: balance; }
+.screen-body h2 em { font-style: normal; color: var(--sand); }
+.prose p { max-width: 62ch; color: var(--muted); margin: 0 0 14px; font-size: 17px; }
+.prose p strong { color: var(--fg); font-weight: 600; }
+.reveal { animation: rise .5s ease both; }
+@keyframes rise { from { transform: translateY(14px); opacity: .001; } }
+.record { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; max-width: 680px; margin: 0; }
+.record div { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.record div:last-child { border-bottom: 0; }
+.record dt { font: 500 12px/1.6 var(--mono); color: var(--steel); margin: 0; }
+.record dd { margin: 0; min-width: 0; }
+.now { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.now li { display: flex; align-items: baseline; gap: 10px; }
+.now li::before { content: ""; width: 6px; height: 6px; border-radius: 2px; background: var(--sand); flex: none; transform: translateY(-2px); }
+.now small { font: 400 12px/1 var(--mono); color: var(--muted); }
+.job { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-2); padding: 24px; display: grid; gap: 14px; max-width: 820px; }
+.job-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.job h3 { font: 700 26px/1.1 var(--display); margin: 0; }
+.job .where { color: var(--sand); font: 500 13px var(--mono); }
+.job ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; }
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.project { position: relative; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: transform .25s ease, border-color .25s ease; }
+.project:hover { transform: translateY(-4px); border-color: var(--steel); }
+.project canvas { width: 100%; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 8px; background: var(--bg); display: block; }
+.project h3 { font: 700 22px/1.1 var(--display); margin: 0; }
+.project p { margin: 0; color: var(--muted); font-size: 15px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+.tag { font: 400 11px/1 var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 5px 7px; }
+.status { position: absolute; top: 14px; right: 14px; font: 500 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--bg); background: var(--sand); border-radius: 4px; padding: 4px 6px; }
+.status.done { background: var(--ok); }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: 820px; }
+.timeline li { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 18px 0; border-top: 1px solid var(--line); }
+.timeline li:last-child { border-bottom: 1px solid var(--line); }
+.timeline time { font: 500 13px/1.6 var(--mono); color: var(--sand); font-variant-numeric: tabular-nums; }
+.timeline h3 { font: 700 22px/1.15 var(--display); margin: 0 0 4px; }
+.timeline p { margin: 0; color: var(--muted); }
+.skillgroups { display: grid; max-width: 880px; border-top: 1px solid var(--line); }
+.skillgroups > div { display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.skillgroups h3 { font: 500 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--sand); margin: 0; }
+.skillgroups ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.skillgroups li { font: 400 14px/1 var(--body); border: 1px solid var(--line); background: var(--bg-2); border-radius: 999px; padding: 8px 12px; }
+.contact-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.mail { font: 500 clamp(18px, 3.4vw, 34px)/1.2 var(--mono); color: var(--fg); user-select: all; overflow-wrap: anywhere; }
+.links { display: flex; gap: 20px; flex-wrap: wrap; }
+.links a { color: var(--fg); font-weight: 600; font-size: 18px; text-decoration-color: var(--steel); text-underline-offset: 4px; }
+.next { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--line); padding-top: 24px; }
+.next span { font: 400 12px var(--mono); color: var(--muted); margin-right: 4px; }
+footer .wrap { padding-block: 32px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 12px/1.4 var(--mono); color: var(--muted); border-top: 1px solid var(--line); }
+
+@media (max-width: 760px) {
+  .hero { height: clamp(640px, 94vh, 800px); }
+  .hero-copy { padding-block: 24px; gap: 14px; }
+  nav a { padding: 8px 6px; }
+  .hud { grid-template-columns: 1fr; }
+  .hud-stats { gap: 14px; }
+  .stage { height: 420px; }
+  .board { height: 1500px; }
+  .tbl { width: calc(50% - 14px); min-width: 0; }
+  .tbl li span:last-child { display: none; }
+  .tbl-head { font-size: 11px; }
+  .record div, .timeline li, .skillgroups > div { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen { transition: none; }
+  .reveal { animation: none; }
+  .rv { transition: none; }
+  .project { transition: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="logo" href="#topo">gabriel<span>.</span></a>
+    <nav aria-label="Seções">
+      <a href="#projetos" data-open="projetos">Projetos</a>
+      <a href="#pessoa" data-open="pessoa">Sobre</a>
+      <a href="#skills" data-open="skills">Skills</a>
+      <a href="#contato" data-open="contato">Contato</a>
+    </nav>
+  </div>
+</header>
+
+<main id="topo">
+  <div class="hero" id="hero">
+    <canvas id="field" aria-label="Holograma de uma máscara metálica saindo da lateral da tela"></canvas>
+    <span class="holo-tag" aria-hidden="true">projeção · mk-01</span>
+
+    <div class="wrap hero-copy">
+      <div class="doc-meta"><span>portfólio · ficha nº 0001</span><span>base legal: consentimento · LGPD art. 7º, I</span></div>
+      <h1>Oi, eu sou <em class="pii" data-kind="titular">Gabriel</em></h1>
+      <div class="controls">
+        <button class="switch" id="privacy" role="switch" aria-checked="false"><span class="track"><i></i></span>modo privacidade</button>
+        <div class="morphs" role="group" aria-label="Mudar a forma das partículas">
+          <button class="chip" data-shape="photo" aria-pressed="true">máscara</button>
+          <button class="chip" data-shape="SQL" aria-pressed="false">SQL</button>
+          <button class="chip" data-shape="ML" aria-pressed="false">ML</button>
+          <button class="chip" data-shape="Python" aria-pressed="false">Python</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="explore" id="explorar">
+    <div class="wrap explore-head">
+      <h2>O <em>SGBD</em></h2>
+      <p>Jogue para popular as tabelas, ou rode <code>SELECT *</code> direto no diagrama para abrir cada parte da minha história.</p>
+    </div>
+
+    <div class="wrap">
+      <div class="game-card">
+        <div class="hud">
+          <div class="q"><span class="kw">INSERT INTO</span> <b id="gTable">skills</b> VALUES (?)</div>
+          <div class="hud-stats">
+            <div class="hearts" id="gLives" aria-label="vidas"></div>
+            <span>pontos<b id="gScore">0</b></span>
+            <span>combo<b id="gCombo">x1</b></span>
+          </div>
+          <ol class="prog" id="gProg"></ol>
+        </div>
+        <div class="stage idle" id="stage" tabindex="0">
+          <canvas id="gameCanvas" aria-label="Jogo: pegue os dados da tabela pedida"></canvas>
+          <div class="overlay" id="gOverlay">
+            <div>
+              <h3 id="gTitle">Popule o <em>banco</em></h3>
+              <p id="gText">Mova o Gabriel com o mouse, o dedo ou as setas. Pegue só os dados da tabela pedida no topo. Cada tabela precisa de 5 linhas para dar <code>COMMIT</code>.</p>
+              <div class="legend">
+                <span><svg viewBox="0 0 22 22"><rect x="1" y="5" width="20" height="12" rx="4" fill="#1d1c1a" stroke="#9aa3ad" stroke-width="1.5"/><circle cx="6" cy="11" r="2" fill="#9aa3ad"/></svg>dado</span>
+                <span><svg viewBox="0 0 22 22"><ellipse cx="11" cy="13" rx="7" ry="6" fill="#c47a66"/><circle cx="11" cy="6" r="3.4" fill="#24170f"/><path d="M3 10l3 1M3 15l3-1M19 10l-3 1M19 15l-3-1" stroke="#c47a66" stroke-width="1.5"/></svg>bug, tira vida</span>
+                <span><svg viewBox="0 0 22 22"><path d="M5 8h11l-1.5 10h-8z" fill="#c2a27c"/><path d="M16 10c3 0 3 4 0 4" stroke="#c2a27c" stroke-width="1.6" fill="none"/><path d="M8 5c0-2 2-2 2-4M12 5c0-2 2-2 2-4" stroke="#8e877e" stroke-width="1.2" fill="none"/></svg>café, recupera vida</span>
+              </div>
+              <button class="btn" id="gStart">Jogar</button>
+              <span class="hint" id="gBest"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap board-wrap">
+      <div class="board" id="board">
+        <svg id="rels" aria-hidden="true"></svg>
+
+        <div class="tbl" data-id="pessoa">
+          <div class="tbl-head"><i></i>pessoa<small>1 linha</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b></b><span>nome</span><span>varchar</span></li>
+            <li><b></b><span>foco</span><span>varchar</span></li>
+            <li><b></b><span>cidade</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="pessoa">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="experiencia">
+          <div class="tbl-head"><i></i>experiencia<small>1 linha</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>empresa</span><span>varchar</span></li>
+            <li><b></b><span>cargo</span><span>varchar</span></li>
+            <li><b></b><span>inicio</span><span>date</span></li>
+          </ul>
+          <button class="run" data-open="experiencia">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="projetos">
+          <div class="tbl-head"><i></i>projetos<small>5 linhas</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>titulo</span><span>varchar</span></li>
+            <li><b></b><span>status</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="projetos">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="skills">
+          <div class="tbl-head"><i></i>skills<small>5 grupos</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b></b><span>nome</span><span>varchar</span></li>
+            <li><b></b><span>categoria</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="skills">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="formacao">
+          <div class="tbl-head"><i></i>formacao<small>3 linhas</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>curso</span><span>varchar</span></li>
+            <li><b></b><span>instituicao</span><span>varchar</span></li>
+            <li><b></b><span>periodo</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="formacao">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="contato">
+          <div class="tbl-head"><i></i>contato<small>3 linhas</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>canal</span><span>varchar</span></li>
+            <li><b></b><span>valor</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="contato">SELECT * <span>→</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Gabriel Souza</span></div></footer>
+
+<div class="screen" id="screen-pessoa" role="dialog" aria-modal="true" aria-label="Sobre" hidden data-query="SELECT * FROM pessoa WHERE id = 1;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>Dados com <em>responsabilidade</em></h2>
+    <div class="prose">
+      <p><strong>Sou um profissional de dados em início de carreira.</strong> Hoje atuo como Jovem Aprendiz em Governança e Privacidade de Dados no QuintoAndar, com tratamento de dados, automação de processos, processos administrativos e documentação de fluxos.</p>
+      <p>Fora do trabalho, desenvolvo projetos de Machine Learning, Business Intelligence e Engenharia de Dados. Meu objetivo é crescer em Análise e Ciência de Dados unindo governança, privacidade, IA e dados.</p>
+    </div>
+    <dl class="record">
+      <div><dt>nome</dt><dd>Gabriel Souza</dd></div>
+      <div><dt>foco</dt><dd>Data Science</dd></div>
+      <div><dt>cidade</dt><dd>São Paulo, SP</dd></div>
+      <div><dt>agora</dt><dd><ul class="now"><li><span>Data Governance</span><small>QuintoAndar</small></li><li><span>Data Science</span><small>FIAP</small></li><li><span>ADS</span><small>Senac</small></li></ul></dd></div>
+    </dl>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="experiencia">experiencia</button><button class="btn ghost" data-open="projetos">projetos</button><button class="btn ghost" data-open="formacao">formacao</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-experiencia" role="dialog" aria-modal="true" aria-label="Experiência" hidden data-query="SELECT empresa, cargo, inicio FROM experiencia WHERE pessoa_id = 1;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>Onde eu <em>trabalho</em></h2>
+    <article class="job">
+      <div class="job-top"><h3>Jovem Aprendiz · Data Governance e Privacidade de Dados</h3><span class="where">QuintoAndar · jan 2026 até hoje</span></div>
+      <ul>
+        <li>Análise, tratamento e qualidade de dados em processos de Governança e Privacidade de Dados (LGPD).</li>
+        <li>Suporte em dashboards para acompanhar os indicadores da área.</li>
+        <li>Automação de processos e rotinas operacionais.</li>
+        <li>Execução e controle de pagamentos via SAP.</li>
+        <li>Mapeamento e documentação de processos com fluxogramas no Figma.</li>
+      </ul>
+      <div class="tags"><span class="tag">LGPD</span><span class="tag">Dashboards</span><span class="tag">Automação</span><span class="tag">SAP</span><span class="tag">Figma</span></div>
+    </article>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="skills">skills</button><button class="btn ghost" data-open="pessoa">pessoa</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-projetos" role="dialog" aria-modal="true" aria-label="Projetos" hidden data-query="SELECT titulo, status FROM projetos ORDER BY status;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>Coisas que <em>construo</em></h2>
+    <div class="projects">
+      <article class="project">
+        <span class="status">em andamento</span>
+        <canvas data-seed="1" width="320" height="180"></canvas>
+        <h3>Radar Urbano</h3>
+        <p>Sistema web que indica as rotas mais seguras e eficientes da cidade com modelos de Machine Learning, dashboards de áreas de risco e um LLM que classifica ocorrências relatadas pelos usuários.</p>
+        <div class="tags"><span class="tag">Machine Learning</span><span class="tag">BI</span><span class="tag">LLM</span><span class="tag">Geoespacial</span></div>
+      </article>
+      <article class="project">
+        <span class="status">em andamento</span>
+        <canvas data-seed="2" width="320" height="180"></canvas>
+        <h3>Challenge FIAP + Motiva</h3>
+        <p>Modelo preditivo para detectar com antecedência falhas em um equipamento que opera nos trilhos de trem de São Paulo, a partir de dados de sensores.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Classificação</span><span class="tag">Manutenção preditiva</span></div>
+      </article>
+      <article class="project">
+        <span class="status">em andamento</span>
+        <canvas data-seed="3" width="320" height="180"></canvas>
+        <h3>Detecção de Vazamento de Dados</h3>
+        <p>Sistema que identifica possíveis vazamentos de dados corporativos com detecção de anomalias, auditoria de acessos em SQL e dashboards de monitoramento, aplicando LGPD.</p>
+        <div class="tags"><span class="tag">MongoDB</span><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">Power BI</span></div>
+      </article>
+      <article class="project">
+        <span class="status done">concluído</span>
+        <canvas data-seed="4" width="320" height="180"></canvas>
+        <h3>Análise de Dados · Copa do Mundo 2026</h3>
+        <p>Análise exploratória de um dataset público com tratamento de dados, visualizações e geração de insights.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Pandas</span></div>
+      </article>
+      <article class="project">
+        <span class="status done">concluído</span>
+        <canvas data-seed="5" width="320" height="180"></canvas>
+        <h3>E-commerce de Tênis</h3>
+        <p>Site de vendas full stack com consumo de API e manipulação de JSON. Projeto acadêmico.</p>
+        <div class="tags"><span class="tag">Full Stack</span><span class="tag">Java</span><span class="tag">API</span><span class="tag">JSON</span></div>
+      </article>
+    </div>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="skills">skills</button><button class="btn ghost" data-open="contato">contato</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-formacao" role="dialog" aria-modal="true" aria-label="Formação" hidden data-query="SELECT curso, instituicao, periodo FROM formacao ORDER BY inicio DESC;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>Onde eu <em>estudo</em></h2>
+    <ol class="timeline">
+      <li><time>2026 – 2028</time><div><h3>Tecnólogo em Data Science · FIAP</h3><p>Em andamento. Machine Learning, Big Data e Análise de Dados.</p></div></li>
+      <li><time>2025 – 2027</time><div><h3>Análise e Desenvolvimento de Sistemas · Senac Santo Amaro</h3><p>Em andamento, 3º semestre. Java, SQL, NoSQL, HTML e CSS.</p></div></li>
+      <li><time>2022 – 2024</time><div><h3>Técnico em Eletrônica · Etec Carolina Carinhato Sampaio</h3><p>Concluído. Microeletrônica, sistemas embarcados e elétrica.</p></div></li>
+    </ol>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="projetos">projetos</button><button class="btn ghost" data-open="pessoa">pessoa</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-skills" role="dialog" aria-modal="true" aria-label="Skills" hidden data-query="SELECT categoria, nome FROM skills ORDER BY categoria;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>O que eu <em>uso</em></h2>
+    <div class="skillgroups">
+      <div><h3>Linguagens</h3><ul><li>Python</li><li>SQL</li><li>Java</li><li>HTML e CSS</li></ul></div>
+      <div><h3>Dados e IA</h3><ul><li>Machine Learning</li><li>Pandas</li><li>LLM</li><li>Big Data</li></ul></div>
+      <div><h3>Bancos e BI</h3><ul><li>MongoDB</li><li>NoSQL</li><li>Modelagem de Dados</li><li>Power BI</li><li>Excel</li></ul></div>
+      <div><h3>Ferramentas</h3><ul><li>Git e GitHub</li><li>APIs e JSON</li><li>N8N</li><li>SAP</li><li>Figma</li></ul></div>
+      <div><h3>Governança</h3><ul><li>Governança de Dados</li><li>Privacidade e LGPD</li></ul></div>
+    </div>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="projetos">projetos</button><button class="btn ghost" data-open="experiencia">experiencia</button></div>
+  </div>
+</div>
+
+<div class="screen" id="screen-contato" role="dialog" aria-modal="true" aria-label="Contato" hidden data-query="INSERT INTO conversas (voce, gabriel) VALUES ('oi', 'oi!');">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="wrap screen-body">
+    <h2>Bora <em>conversar?</em></h2>
+    <div class="contact-row">
+      <span class="mail" id="mail">gabriel2021gss@gmail.com</span>
+      <button class="btn ghost" id="copy">Copiar e-mail</button>
+    </div>
+    <div class="links">
+      <a href="https://www.linkedin.com/in/gabrielsouza7" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/ogsantss" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <div class="next"><span>JOIN →</span><button class="btn ghost" data-open="pessoa">pessoa</button><button class="btn ghost" data-open="projetos">projetos</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const css = getComputedStyle(document.documentElement);
+  const tok = n => css.getPropertyValue(n).trim();
+  const C = { bg: tok('--bg'), bg2: tok('--bg-2'), bg3: tok('--bg-3'), line: tok('--line'), fg: tok('--fg'), muted: tok('--muted'), steel: tok('--steel'), sand: tok('--sand'), ok: tok('--ok'), err: tok('--err') };
+  const BODY = tok('--body'), MONO = tok('--mono'), DISPLAY = tok('--display');
+  const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const A = hex(C.steel), B = hex(C.sand);
+  const LEVELS = 10;
+  const palette = Array.from({ length: LEVELS }, (_, i) => {
+    const t = i / (LEVELS - 1);
+    return `rgb(${A.map((a, k) => Math.round(a + (B[k] - a) * t)).join(',')})`;
+  });
+  const $ = id => document.getElementById(id);
+  const SKIN = '#c98e68', HAIR = '#17141c', INK = '#120f16';
+  const look = { cap: false, tee: false };  // visual do mini Gabriel no jogo
+
+  /* ---------- Holograma: máscara saindo da lateral da tela ---------- */
+  const hero = $('hero'), cvs = $('field'), ctx = cvs.getContext('2d'), copy = hero.querySelector('.hero-copy');
+  let W = 0, H = 0, step = 6, particles = [], shape = 'photo', source = null, heroVisible = true;
+  let scroll = 0, glitch = 0;
+  const mouse = { x: -9999, y: -9999, active: false };
+  // grafite → aço → branco: a luz da projeção
+  const HOLO = (() => {
+    const stops = [hex('#1f2124'), hex('#8d96a0'), hex('#f2efe9')];
+    return Array.from({ length: LEVELS }, (_, i) => {
+      const t = i / (LEVELS - 1), seg = t < 0.5 ? 0 : 1, u = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+      return `rgb(${stops[seg].map((a, k) => Math.round(a + (stops[seg + 1][k] - a) * u)).join(',')})`;
+    });
+  })();
+  const steelRGB = hex(C.steel).join(',');
+
+  // Máscara em tons de cinza: o brilho vira o tamanho e a cor dos pontos.
+  // Coordenadas desenhadas numa prancha de 900 × 1350 e reduzidas para o canvas de 300 × 400.
+  function drawMask() {
+    const c = document.createElement('canvas');
+    c.width = 300; c.height = 400;
+    const g = c.getContext('2d');
+    const L = (v, a = 1) => { const n = Math.round(v * 255); return `rgba(${n},${n},${n},${a})`; };
+    const P = d => new Path2D(d);
+    // espelha uma lista de pontos do lado esquerdo para o direito
+    const sym = pts => P('M' + pts.map(p => p.join(',')).join(' L') + ' Z M' + pts.map(([x, y]) => [900 - x, y].join(',')).join(' L') + ' Z');
+    g.fillStyle = '#000'; g.fillRect(0, 0, 300, 400);
+    g.setTransform(0.406, 0, 0, 0.406, -32.8, -77.7);
+
+    const shell = P('M450,298 L640,302 C680,305 700,330 705,380 L715,560 L765,575 L775,620 L760,760 L720,800 L700,880 L650,975 L565,1075 L335,1075 L250,975 L200,880 L180,800 L140,760 L125,620 L135,575 L185,560 L195,380 C200,330 220,305 260,302 Z');
+    const face = P('M215,335 L345,335 L385,432 L515,432 L555,335 L685,335 L700,420 L702,610 L690,800 L650,950 L595,1005 L305,1005 L250,950 L210,800 L198,610 L200,420 Z');
+
+    // casco externo: metal escuro com reflexos verticais
+    let gr = g.createLinearGradient(125, 0, 775, 0);
+    gr.addColorStop(0, L(.5)); gr.addColorStop(.12, L(.3)); gr.addColorStop(.5, L(.22)); gr.addColorStop(.88, L(.3)); gr.addColorStop(1, L(.42));
+    g.fillStyle = gr; g.fill(shell);
+    g.strokeStyle = L(.72); g.lineWidth = 7; g.stroke(shell);
+    // recortes escuros nas laterais e na mandíbula
+    g.fillStyle = L(.06);
+    g.fill(sym([[150, 622], [182, 612], [192, 760], [162, 748]]));
+    g.fill(sym([[212, 830], [246, 942], [230, 950], [198, 842]]));
+    // reflexo fino no casco
+    g.strokeStyle = L(.62); g.lineWidth = 5;
+    g.stroke(P('M205,390 L198,560 M695,390 L702,560 M350,1062 L550,1062'));
+
+    // placa do rosto: metal claro, luz de cima e sombra nas bordas
+    gr = g.createLinearGradient(0, 335, 0, 1005);
+    gr.addColorStop(0, L(.97)); gr.addColorStop(.5, L(.8)); gr.addColorStop(1, L(.58));
+    g.fillStyle = gr; g.fill(face);
+    g.save(); g.clip(face);
+    gr = g.createLinearGradient(198, 0, 702, 0);
+    gr.addColorStop(0, L(0, .42)); gr.addColorStop(.3, L(0, 0)); gr.addColorStop(.7, L(0, 0)); gr.addColorStop(1, L(0, .42));
+    g.fillStyle = gr; g.fillRect(150, 300, 600, 750);
+    for (const [x, y, r] of [[450, 500, 210], [450, 790, 170]]) {
+      gr = g.createRadialGradient(x, y, 6, x, y, r);
+      gr.addColorStop(0, L(1, .4)); gr.addColorStop(1, L(1, 0));
+      g.fillStyle = gr; g.fillRect(150, 300, 600, 750);
+    }
+    g.restore();
+    g.strokeStyle = L(1); g.lineWidth = 6; g.stroke(face);
+
+    // painéis: sulco escuro com fio de luz ao lado, como chapa estampada
+    const bevel = d => {
+      const p = P(d);
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      g.strokeStyle = L(.12); g.lineWidth = 9; g.stroke(p);
+      g.save(); g.translate(5, 4); g.strokeStyle = L(1, .9); g.lineWidth = 3; g.stroke(p); g.restore();
+    };
+    bevel('M420,445 L420,555 L385,600 L420,642 L480,642 L515,600 L480,555 L480,445');
+    bevel('M232,352 L238,545 L318,585 M668,352 L662,545 L582,585');
+    bevel('M212,700 C236,782 272,860 332,906 M688,700 C664,782 628,860 568,906');
+    bevel('M262,955 L318,985 L582,985 L638,955');
+
+    // olhos hexagonais acesos, com moldura escura
+    g.fillStyle = L(.03);
+    g.fill(sym([[206, 640], [242, 598], [370, 598], [404, 640], [370, 684], [238, 684]]));
+    g.fillStyle = L(1);
+    g.fill(sym([[224, 640], [252, 612], [362, 612], [388, 640], [362, 668], [246, 668]]));
+
+    // fenda da boca
+    g.fillStyle = L(.04); g.fill(P('M350,908 L550,908 L542,936 L358,936 Z'));
+    g.strokeStyle = L(1, .8); g.lineWidth = 3; g.stroke(P('M358,940 L542,940'));
+
+    // testa: chapa central do casco
+    g.fillStyle = L(.3); g.fill(P('M345,305 L555,305 L555,335 L515,432 L385,432 L345,335 Z'));
+    g.strokeStyle = L(.68); g.lineWidth = 5; g.stroke(P('M360,318 L540,318'));
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    return c;
+  }
+
+  function portraitBox() {
+    const mobile = W < 760;
+    const h = mobile ? H * 0.58 : H * 1.02;
+    const w = h * 0.75;
+    return { x: W - w * (mobile ? 0.5 : 0.56), y: mobile ? 0 : (H - h) / 2 + 14, w, h };
+  }
+
+  function samplePhoto() {
+    const box = portraitBox();
+    const cols = Math.floor(box.w / step), rows = Math.floor(box.h / step);
+    const off = document.createElement('canvas');
+    off.width = cols; off.height = rows;
+    const g = off.getContext('2d', { willReadFrequently: true });
+    const iw = source.width, ih = source.height;
+    const s = Math.min(cols / iw, rows / ih);
+    g.drawImage(source, (cols - iw * s) / 2, (rows - ih * s) / 2, iw * s, ih * s);
+    const d = g.getImageData(0, 0, cols, rows).data;
+    const cy = box.y + box.h / 2, pts = [];
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const k = (j * cols + i) * 4;
+      const l = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255;
+      if (l < 0.07) continue;
+      // perspectiva: o lado que encosta na borda fica maior, como se saísse da tela
+      const u = i / cols;
+      const x = box.x + i * step * (1 + u * 0.16);
+      const y = cy + (j * step - box.h / 2) * (1 + u * 0.12);
+      if (x > W + 12) continue;
+      pts.push({ x, y, r: step * 0.5 * Math.min(1, l * 1.15) * (1 + u * 0.3), c: Math.min(LEVELS - 1, Math.floor(l * LEVELS)) });
+    }
+    return pts;
+  }
+
+  function sampleWord(word) {
+    const off = document.createElement('canvas');
+    const cols = Math.floor(W / step), rows = Math.floor(H / step);
+    off.width = cols; off.height = rows;
+    const g = off.getContext('2d', { willReadFrequently: true });
+    const mobile = W < 760;
+    const areaW = mobile ? cols * 0.9 : cols * 0.44;
+    let size = rows * (mobile ? 0.26 : 0.38);
+    g.font = `800 ${size}px ${DISPLAY}`;
+    const mw = g.measureText(word).width;
+    if (mw > areaW) { size *= areaW / mw; g.font = `800 ${size}px ${DISPLAY}`; }
+    g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(word, mobile ? cols / 2 : cols * 0.74, mobile ? rows * 0.28 : rows * 0.46);
+    const d = g.getImageData(0, 0, cols, rows).data;
+    const pts = [];
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      if (d[(j * cols + i) * 4 + 3] > 120) pts.push({ x: i * step + step / 2, y: j * step + step / 2, r: step * 0.42, c: 5 + Math.floor(5 * (j / rows)) % 5 });
+    }
+    return pts;
+  }
+
+  function setTargets(pts) {
+    // embaralha para a transição ficar orgânica
+    for (let i = pts.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [pts[i], pts[j]] = [pts[j], pts[i]]; }
+    while (particles.length < pts.length) particles.push({ x: W + Math.random() * 80, y: Math.random() * H, vx: 0, vy: 0, r: 0, tx: 0, ty: 0, tr: 0, c: 0 });
+    particles.forEach((p, i) => {
+      const t = pts[i];
+      if (t) { p.tx = t.x; p.ty = t.y; p.tr = t.r; p.c = t.c; }
+      else { const o = pts[(Math.random() * pts.length) | 0] || { x: W, y: H / 2 }; p.tx = o.x; p.ty = o.y; p.tr = 0; }
+    });
+    if (reduce) particles.forEach(p => { p.x = p.tx; p.y = p.ty; p.r = p.tr; });
+  }
+  function rebuild() { if (source) setTargets(shape === 'photo' ? samplePhoto() : sampleWord(shape)); }
+
+  function resizeHero() {
+    const r = hero.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height; cvs.width = W * dpr; cvs.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    step = W < 760 ? 5 : 6;
+    rebuild();
+  }
+
+  new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
+  function heroFrame(t) {
+    requestAnimationFrame(heroFrame);
+    if (!heroVisible || document.body.classList.contains('locked')) return;
+    const time = t * 0.001;
+    // rolagem suavizada: 0 no topo, 1 quando o hero sai da tela
+    const target = Math.max(0, Math.min(1, scrollY / (H * 0.9)));
+    scroll += (target - scroll) * (reduce ? 1 : 0.08);
+    if (!reduce && glitch <= 0 && Math.random() < 0.003) glitch = 0.12;
+    glitch -= 1 / 60;
+    const flicker = reduce ? 1 : 0.94 + 0.06 * Math.sin(time * 13) * Math.sin(time * 7.3);
+
+    ctx.clearRect(0, 0, W, H);
+    // luz da borda do monitor, de onde a projeção sai
+    const glow = ctx.createRadialGradient(W, H * 0.46, 0, W, H * 0.46, H * 0.8);
+    glow.addColorStop(0, `rgba(${steelRGB},${0.16 * (1 - scroll)})`); glow.addColorStop(1, `rgba(${steelRGB},0)`);
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+    const R = W < 760 ? 70 : 110, R2 = R * R;
+    const buckets = Array.from({ length: LEVELS }, () => []);
+    for (const p of particles) {
+      let ax = (p.tx - p.x) * 0.055, ay = (p.ty - p.y) * 0.055;
+      if (mouse.active) {
+        const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+        if (d2 < R2 && d2 > 0.01) { const f = (1 - d2 / R2) * 9 / Math.sqrt(d2); ax += dx * f; ay += dy * f; }
+      }
+      if (!reduce) { ax += Math.sin(time * 1.1 + p.ty * 0.05) * 0.03; ay += Math.cos(time * 0.9 + p.tx * 0.05) * 0.03; }
+      p.vx = (p.vx + ax) * 0.8; p.vy = (p.vy + ay) * 0.8;
+      p.x += p.vx; p.y += p.vy;
+      p.r += (p.tr - p.r) * 0.08;
+      if (p.r > 0.25) buckets[p.c].push(p);
+    }
+
+    ctx.save();
+    // parallax: ao rolar, a máscara sobe mais devagar, recua para a borda e esmaece
+    ctx.translate(scroll * 70 + (glitch > 0 ? (Math.random() - .5) * 8 : 0), -scroll * 110 + Math.sin(time * 0.8) * (reduce ? 0 : 3));
+    ctx.globalAlpha = Math.max(0, (1 - scroll * 0.85) * flicker * (glitch > 0 ? 0.65 : 1));
+    buckets.forEach((b, i) => {
+      if (!b.length) return;
+      ctx.fillStyle = HOLO[i]; ctx.beginPath();
+      for (const p of b) { ctx.moveTo(p.x + p.r, p.y); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); }
+      ctx.fill();
+    });
+    // faixa de luz varrendo o holograma e linhas finas de varredura
+    ctx.globalCompositeOperation = 'source-atop';
+    const sy = ((time * 90) % (H + 300)) - 150;
+    const band = ctx.createLinearGradient(0, sy - 70, 0, sy + 70);
+    band.addColorStop(0, 'rgba(255,255,255,0)'); band.addColorStop(.5, `rgba(255,255,255,${0.22 + scroll * 0.2})`); band.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = band; ctx.fillRect(0, sy - 70 - 120, W + 120, 140 + 240);
+    ctx.fillStyle = 'rgba(0,0,0,.28)';
+    for (let y = -120; y < H + 120; y += 3) ctx.fillRect(0, y, W + 120, 1);
+    ctx.restore();
+
+    if (copy) { copy.style.transform = `translateY(${-scroll * 40}px)`; copy.style.opacity = String(1 - scroll * 0.5); }
+  }
+
+  function pointer(e) { const r = cvs.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.active = true; }
+  hero.addEventListener('pointermove', pointer);
+  hero.addEventListener('pointerdown', pointer);
+  hero.addEventListener('pointerleave', () => { mouse.active = false; });
+  cvs.addEventListener('click', e => {
+    pointer(e);
+    for (const p of particles) {
+      const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy) || 1, f = 40 * Math.min(1, 220 / d);
+      p.vx += dx / d * f * (0.5 + Math.random()); p.vy += dy / d * f * (0.5 + Math.random());
+    }
+  });
+  const chips = [...document.querySelectorAll('.chip')];
+  function morph(to) {
+    shape = to;
+    chips.forEach(c => c.setAttribute('aria-pressed', String(c.dataset.shape === to)));
+    rebuild();
+  }
+  chips.forEach(c => c.addEventListener('click', () => morph(c.dataset.shape)));
+  source = drawMask();
+
+  // Modo privacidade: o hero nasce mascarado, como dado pessoal sob a LGPD, e se revela com consentimento
+  const piis = [...copy.querySelectorAll('.pii')], sw = $('privacy');
+  const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*';
+  piis.forEach(el => { el.dataset.real = el.textContent; el.tabIndex = 0; });
+  // mascaramento total: cada letra vira uma bolinha
+  const masked = t => t.replace(/\S/g, '•');
+  piis.forEach(el => { el.dataset.mask = masked(el.dataset.real); });
+  function scrambleTo(el, target, delay) {
+    const id = (el._anim = (el._anim || 0) + 1);
+    if (reduce) { el.textContent = target; return; }
+    const t0 = performance.now() + delay, dur = 600;
+    (function tick(now) {
+      if (el._anim !== id) return;
+      const k = Math.max(0, Math.min(1, (now - t0) / dur)), n = Math.floor(k * target.length);
+      el.textContent = target.slice(0, n) + target.slice(n).replace(/\S/g, () => GLYPHS[(Math.random() * GLYPHS.length) | 0]);
+      if (k < 1) requestAnimationFrame(tick); else el.textContent = target;
+    })(performance.now());
+  }
+  const isOn = () => copy.classList.contains('redact');
+  function setPrivacy(on, animate) {
+    copy.classList.toggle('redact', on);
+    sw.setAttribute('aria-checked', String(on));
+    piis.forEach((el, i) => {
+      const target = on ? el.dataset.mask : el.dataset.real;
+      if (animate) scrambleTo(el, target, i * 120); else { el._anim = (el._anim || 0) + 1; el.textContent = target; }
+    });
+  }
+  sw.addEventListener('click', () => setPrivacy(!isOn(), true));
+  piis.forEach(el => {
+    const peek = () => { if (isOn()) scrambleTo(el, el.dataset.real, 0); };
+    const hide = () => { if (isOn()) scrambleTo(el, el.dataset.mask, 0); };
+    el.addEventListener('mouseenter', peek); el.addEventListener('focus', peek);
+    el.addEventListener('mouseleave', hide); el.addEventListener('blur', hide);
+  });
+  if (reduce) setPrivacy(false);
+  else { setPrivacy(true); setTimeout(() => setPrivacy(false, true), 1500); }
+
+  // seções entram suavemente ao rolar
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('.explore-head, .game-card, .board-wrap, footer').forEach(el => {
+      el.classList.add('rv');
+      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
+    });
+  }
+
+  /* ---------- Diagrama ER ---------- */
+  const board = $('board'), relSvg = $('rels');
+  const tables = Object.fromEntries([...board.querySelectorAll('.tbl')].map(t => [t.dataset.id, t]));
+  const defaultCounts = Object.fromEntries(Object.entries(tables).map(([k, t]) => [k, t.querySelector('small').textContent]));
+  const LAYOUT = {
+    desktop: { pessoa: [0, 0.45], experiencia: [0.48, 0], projetos: [1, 0.05], skills: [1, 0.95], formacao: [0.02, 1], contato: [0.5, 1] },
+    mobile:  { pessoa: [0, 0], experiencia: [1, 0.13], projetos: [0, 0.37], skills: [1, 0.57], formacao: [0, 0.80], contato: [1, 1] }
+  };
+  const RELS = [['pessoa', 'experiencia', '1', 'N'], ['pessoa', 'projetos', '1', 'N'], ['projetos', 'skills', 'N', 'N'], ['pessoa', 'formacao', '1', 'N'], ['pessoa', 'contato', '1', 'N']];
+  let mode = '';
+
+  function place() {
+    const m = board.clientWidth < 860 ? 'mobile' : 'desktop';
+    if (m === mode) return draw();
+    mode = m;
+    for (const [id, [fx, fy]] of Object.entries(LAYOUT[m])) {
+      const t = tables[id];
+      t.style.left = fx * (board.clientWidth - t.offsetWidth) + 'px';
+      t.style.top = fy * (board.clientHeight - t.offsetHeight) + 'px';
+    }
+    spread();
+    draw();
+  }
+  // empurra tabelas que ficaram perto demais até sobrar um respiro entre elas
+  function spread() {
+    const GAP = 48, list = Object.values(tables), bw = board.clientWidth, bh = board.clientHeight;
+    for (let n = 0; n < 40; n++) {
+      let moved = false;
+      for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
+        const a = box(list[i]), b = box(list[j]);
+        const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x) + GAP;
+        const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y) + GAP;
+        if (ox <= 0 || oy <= 0) continue;
+        moved = true;
+        if (oy < ox) {
+          const dir = b.y + b.h / 2 >= a.y + a.h / 2 ? 1 : -1;
+          list[i].style.top = Math.max(0, Math.min(bh - a.h, a.y - dir * oy / 2)) + 'px';
+          list[j].style.top = Math.max(0, Math.min(bh - b.h, b.y + dir * oy / 2)) + 'px';
+        } else {
+          const dir = b.x + b.w / 2 >= a.x + a.w / 2 ? 1 : -1;
+          list[i].style.left = Math.max(0, Math.min(bw - a.w, a.x - dir * ox / 2)) + 'px';
+          list[j].style.left = Math.max(0, Math.min(bw - b.w, b.x + dir * ox / 2)) + 'px';
+        }
+      }
+      if (!moved) break;
+    }
+  }
+  function box(t) { return { x: t.offsetLeft, y: t.offsetTop, w: t.offsetWidth, h: t.offsetHeight }; }
+  function anchor(a, b) {
+    const ac = { x: a.x + a.w / 2, y: a.y + a.h / 2 }, bc = { x: b.x + b.w / 2, y: b.y + b.h / 2 };
+    const dx = bc.x - ac.x, dy = bc.y - ac.y;
+    if (Math.abs(dx) / a.w > Math.abs(dy) / a.h) return { x: dx > 0 ? a.x + a.w : a.x, y: ac.y, nx: Math.sign(dx), ny: 0 };
+    return { x: ac.x, y: dy > 0 ? a.y + a.h : a.y, nx: 0, ny: Math.sign(dy) };
+  }
+  function draw() {
+    let out = '';
+    for (const [from, to, ca, cb] of RELS) {
+      const p = anchor(box(tables[from]), box(tables[to])), q = anchor(box(tables[to]), box(tables[from]));
+      const k = Math.max(40, Math.hypot(q.x - p.x, q.y - p.y) * 0.35);
+      const hot = tables[from].classList.contains('hot') || tables[to].classList.contains('hot') ? ' hot' : '';
+      out += `<path class="rel${hot}" d="M${p.x},${p.y} C${p.x + p.nx * k},${p.y + p.ny * k} ${q.x + q.nx * k},${q.y + q.ny * k} ${q.x},${q.y}"/>`;
+      out += `<text class="card-label${hot}" x="${p.x + p.nx * 14 + (p.ny ? 8 : -3)}" y="${p.y + p.ny * 16 + (p.nx ? -6 : 4)}">${ca}</text>`;
+      out += `<text class="card-label${hot}" x="${q.x + q.nx * 14 + (q.ny ? 8 : -3)}" y="${q.y + q.ny * 16 + (q.nx ? -6 : 4)}">${cb}</text>`;
+    }
+    relSvg.innerHTML = out;
+  }
+  Object.values(tables).forEach(t => {
+    const headEl = t.querySelector('.tbl-head');
+    let sx, sy, ox, oy, dragging = false;
+    headEl.addEventListener('pointerdown', e => { dragging = true; headEl.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; ox = t.offsetLeft; oy = t.offsetTop; t.style.zIndex = 3; });
+    headEl.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      t.style.left = Math.max(0, Math.min(board.clientWidth - t.offsetWidth, ox + e.clientX - sx)) + 'px';
+      t.style.top = Math.max(0, Math.min(board.clientHeight - t.offsetHeight, oy + e.clientY - sy)) + 'px';
+      draw();
+    });
+    const end = () => { dragging = false; t.style.zIndex = ''; };
+    headEl.addEventListener('pointerup', end); headEl.addEventListener('pointercancel', end);
+    t.addEventListener('mouseenter', () => { t.classList.add('hot'); draw(); });
+    t.addEventListener('mouseleave', () => { t.classList.remove('hot'); draw(); });
+  });
+
+  /* ---------- Jogo: Popule o banco ---------- */
+  const LEVEL_TABLES = [
+    { id: 'skills', items: ['Python', 'SQL', 'Java', 'Power BI', 'MongoDB', 'Pandas', 'N8N', 'Git', 'Excel'] },
+    { id: 'projetos', items: ['Radar Urbano', 'Challenge Motiva', 'Vazamento de Dados', 'Copa 2026', 'E-commerce Tênis'] },
+    { id: 'formacao', items: ['FIAP', 'Senac', 'Etec', 'Data Science', 'ADS', 'Eletrônica'] },
+    { id: 'experiencia', items: ['QuintoAndar', 'Jovem Aprendiz', 'Data Governance', 'SAP', 'LGPD'] },
+    { id: 'contato', items: ['E-mail', 'LinkedIn', 'GitHub'] }
+  ];
+  const GOAL = 5, MAX_LIVES = 3;
+  const stage = $('stage'), gc = $('gameCanvas'), g2 = gc.getContext('2d');
+  let GW = 0, GH = 0, best = 0;
+  try { best = +localStorage.getItem('gabriel-game-best') || 0; } catch {}
+  const G = { state: 'idle', level: 0, prog: [], score: 0, combo: 1, lives: MAX_LIVES, items: [], fx: [], texts: [], spawn: 0, elapsed: 0, shake: 0, banner: null, mood: 'neutral', moodT: 0, px: 0, tx: 0, keys: 0, facing: 1, walk: 0 };
+
+  function sizeStage() {
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    GW = stage.clientWidth; GH = stage.clientHeight;
+    gc.width = GW * dpr; gc.height = GH * dpr; g2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!G.px) G.px = G.tx = GW / 2;
+    G.px = Math.min(GW - 50, G.px); G.tx = Math.min(GW - 50, G.tx);
+  }
+
+  const heartSvg = on => `<svg viewBox="0 0 20 18"><path d="M10 17 C2 11 0 7 2 4 C4 0 9 1 10 5 C11 1 16 0 18 4 C20 7 18 11 10 17Z" fill="${on ? C.err : 'none'}" stroke="${on ? C.err : C.line}" stroke-width="1.6"/></svg>`;
+  function hud() {
+    $('gTable').textContent = LEVEL_TABLES[Math.min(G.level, LEVEL_TABLES.length - 1)].id;
+    $('gScore').textContent = G.score;
+    $('gCombo').textContent = 'x' + G.combo;
+    $('gLives').innerHTML = Array.from({ length: MAX_LIVES }, (_, i) => heartSvg(i < G.lives)).join('');
+    $('gProg').innerHTML = LEVEL_TABLES.map((t, i) => {
+      const n = G.prog[i] || 0, cls = n >= GOAL ? 'ok' : i === G.level && G.state === 'play' ? 'cur' : '';
+      return `<li class="${cls}">${t.id}<span class="pips">${Array.from({ length: GOAL }, (_, k) => `<i class="${k < n ? 'on' : ''}"></i>`).join('')}</span></li>`;
+    }).join('');
+  }
+  function syncDiagram() {
+    LEVEL_TABLES.forEach((t, i) => {
+      const el = tables[t.id], n = G.prog[i] || 0;
+      el.classList.toggle('committed', n >= GOAL);
+      el.querySelector('small').textContent = n >= GOAL ? 'COMMIT ✓' : n ? `${n}/${GOAL} linhas` : defaultCounts[t.id];
+    });
+  }
+
+  function startGame() {
+    Object.assign(G, { state: 'play', level: 0, prog: LEVEL_TABLES.map(() => 0), score: 0, combo: 1, lives: MAX_LIVES, items: [], fx: [], texts: [], spawn: 0.8, elapsed: 0, shake: 0, banner: { text: 'INSERT INTO skills', life: 1.6 }, mood: 'smile', moodT: 1 });
+    $('gOverlay').hidden = true; stage.classList.remove('idle');
+    hud(); syncDiagram(); stage.focus({ preventScroll: true });
+  }
+  function endGame(won) {
+    G.state = won ? 'won' : 'over';
+    const record = G.score > best;
+    if (record) { best = G.score; try { localStorage.setItem('gabriel-game-best', String(best)); } catch {} }
+    $('gTitle').innerHTML = won ? 'Banco <em>populado!</em>' : '<em>ROLLBACK;</em>';
+    $('gText').innerHTML = won
+      ? `Todas as tabelas com <code>COMMIT</code>. Você fez ${G.score} pontos. Agora explore o diagrama abaixo para ver cada tabela por dentro.`
+      : `Os bugs venceram dessa vez. Você fez ${G.score} pontos e completou ${G.prog.filter(n => n >= GOAL).length} de ${LEVEL_TABLES.length} tabelas.`;
+    $('gStart').textContent = 'Jogar de novo';
+    $('gBest').textContent = record ? 'Novo recorde!' : `Recorde: ${best} pontos`;
+    setTimeout(() => { $('gOverlay').hidden = false; stage.classList.add('idle'); }, won ? 900 : 500);
+    if (won) for (let i = 0; i < 160; i++) G.fx.push({ x: GW / 2, y: GH / 2, vx: (Math.random() - .5) * 700, vy: -Math.random() * 600 - 100, life: 1.6, c: palette[(Math.random() * LEVELS) | 0], r: 2 + Math.random() * 4 });
+    hud();
+  }
+  $('gStart').addEventListener('click', startGame);
+  if (best) $('gBest').textContent = `Recorde: ${best} pontos`;
+
+  function spawnItem() {
+    const cur = LEVEL_TABLES[G.level];
+    const r = Math.random();
+    let it;
+    if (r < 0.13) it = { kind: 'bug', w: 34, h: 30 };
+    else if (r < 0.19 && G.lives < MAX_LIVES) it = { kind: 'coffee', w: 30, h: 30 };
+    else {
+      const others = LEVEL_TABLES.filter(t => t.id !== cur.id);
+      const src = r < 0.62 ? cur : others[(Math.random() * others.length) | 0];
+      const label = src.items[(Math.random() * src.items.length) | 0];
+      g2.font = `600 14px ${BODY}`;
+      it = { kind: 'data', label, table: src.id, w: g2.measureText(label).width + 34, h: 32 };
+    }
+    it.x = it.w / 2 + 8 + Math.random() * Math.max(1, GW - it.w - 16);
+    it.y = -30; it.vy = 105 + G.level * 20 + G.elapsed * 0.6 + Math.random() * 40;
+    it.rot = (Math.random() - .5) * 0.3; it.vr = (Math.random() - .5) * 1.2; it.t = Math.random() * 6;
+    G.items.push(it);
+  }
+
+  function pop(x, y, color, n) { for (let i = 0; i < n; i++) G.fx.push({ x, y, vx: (Math.random() - .5) * 320, vy: -Math.random() * 260 - 40, life: 0.7, c: color, r: 2 + Math.random() * 3 }); }
+  function floatText(x, y, text, color) { G.texts.push({ x, y, text, color, life: 1 }); }
+  function flashTable(id) { const t = tables[id]; if (!t) return; t.classList.add('flash'); setTimeout(() => t.classList.remove('flash'), 400); }
+
+  function catchItem(it) {
+    const cur = LEVEL_TABLES[G.level];
+    if (it.kind === 'bug') {
+      G.lives--; G.combo = 1; G.shake = 12; G.mood = 'ouch'; G.moodT = 0.8;
+      pop(it.x, it.y, C.err, 18); floatText(it.x, it.y, 'bug!', C.err);
+      if (G.lives <= 0) endGame(false);
+    } else if (it.kind === 'coffee') {
+      G.lives = Math.min(MAX_LIVES, G.lives + 1); G.mood = 'smile'; G.moodT = 0.8;
+      pop(it.x, it.y, C.sand, 14); floatText(it.x, it.y, '+1 café', C.sand);
+    } else if (it.table === cur.id) {
+      const pts = 10 * G.combo;
+      G.score += pts; G.combo = Math.min(5, G.combo + 1); G.prog[G.level]++;
+      G.mood = 'smile'; G.moodT = 0.6;
+      pop(it.x, it.y, C.ok, 16); floatText(it.x, it.y, '+' + pts, C.ok); flashTable(cur.id);
+      if (G.prog[G.level] >= GOAL) {
+        G.banner = { text: `COMMIT; ${cur.id} ✓`, life: 1.8 };
+        pop(G.px, GH - 120, C.sand, 40);
+        G.level++;
+        G.items = G.items.filter(i => i.kind !== 'data');
+        syncDiagram();
+        if (G.level >= LEVEL_TABLES.length) return endGame(true);
+        setTimeout(() => { if (G.state === 'play') G.banner = { text: `INSERT INTO ${LEVEL_TABLES[G.level].id}`, life: 1.6 }; }, 1300);
+      }
+      syncDiagram();
+    } else {
+      G.score = Math.max(0, G.score - 5); G.combo = 1; G.shake = 6; G.mood = 'ouch'; G.moodT = 0.6;
+      pop(it.x, it.y, C.err, 10); floatText(it.x, it.y, `ORA-02291 · é de ${it.table}`, C.err);
+    }
+    hud();
+  }
+
+  function update(dt) {
+    G.elapsed += dt;
+    if (G.keys) G.tx += G.keys * 560 * dt;
+    G.tx = Math.max(50, Math.min(GW - 50, G.tx));
+    const step = (G.tx - G.px) * Math.min(1, dt * 12);
+    G.px += step;
+    if (Math.abs(step) > 0.3) { G.facing = Math.sign(step); G.walk += dt * 14; }
+    if (G.moodT > 0 && (G.moodT -= dt) <= 0) G.mood = 'neutral';
+    if (G.banner && (G.banner.life -= dt) <= 0) G.banner = null;
+    if (G.state === 'play') {
+      if ((G.spawn -= dt) <= 0) { spawnItem(); G.spawn = Math.max(0.42, 1.0 - G.level * 0.09 - G.elapsed * 0.003); }
+      const trayY = GH - 128, trayW = 104;
+      for (const it of G.items) {
+        it.y += it.vy * dt; it.rot += it.vr * dt; it.t += dt;
+        if (!it.dead && G.state === 'play' && it.y + it.h / 2 >= trayY - 4 && it.y - it.h / 2 <= trayY + 14 && Math.abs(it.x - G.px) < trayW / 2 + it.w * 0.3) { it.dead = true; catchItem(it); }
+        if (it.y - it.h > GH) it.dead = true;
+      }
+      G.items = G.items.filter(i => !i.dead);
+    }
+    for (const p of G.fx) { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
+    G.fx = G.fx.filter(p => p.life > 0);
+    for (const t of G.texts) { t.y -= 50 * dt; t.life -= dt; }
+    G.texts = G.texts.filter(t => t.life > 0);
+    G.shake *= 0.85;
+  }
+
+  function rr(x, y, w, h, r) { g2.beginPath(); g2.roundRect(x, y, w, h, r); }
+
+  function drawData(it) {
+    g2.save(); g2.translate(it.x, it.y); g2.rotate(it.rot * 0.4);
+    rr(-it.w / 2, -it.h / 2, it.w, it.h, 9);
+    g2.fillStyle = C.bg3; g2.fill(); g2.lineWidth = 2; g2.strokeStyle = '#3a3631'; g2.stroke();
+    g2.fillStyle = C.steel; g2.beginPath(); g2.arc(-it.w / 2 + 13, 0, 4, 0, Math.PI * 2); g2.fill();
+    g2.fillStyle = C.fg; g2.font = `600 14px ${BODY}`; g2.textBaseline = 'middle'; g2.fillText(it.label, -it.w / 2 + 23, 1);
+    g2.restore();
+  }
+  function drawBug(it) {
+    g2.save(); g2.translate(it.x, it.y); g2.rotate(Math.sin(it.t * 6) * 0.15);
+    g2.strokeStyle = C.err; g2.lineWidth = 2.5; g2.lineCap = 'round';
+    for (let i = -1; i <= 1; i++) {
+      const w = Math.sin(it.t * 18 + i) * 3;
+      g2.beginPath(); g2.moveTo(-8, i * 6); g2.lineTo(-17, i * 7 + w); g2.moveTo(8, i * 6); g2.lineTo(17, i * 7 - w); g2.stroke();
+    }
+    g2.beginPath(); g2.moveTo(-4, -14); g2.quadraticCurveTo(-8, -22, -12, -22); g2.moveTo(4, -14); g2.quadraticCurveTo(8, -22, 12, -22); g2.stroke();
+    g2.fillStyle = C.err; g2.beginPath(); g2.ellipse(0, 3, 12, 11, 0, 0, Math.PI * 2); g2.fill();
+    g2.strokeStyle = '#8f4b3e'; g2.lineWidth = 2; g2.beginPath(); g2.moveTo(0, -7); g2.lineTo(0, 14); g2.stroke();
+    g2.fillStyle = '#24170f'; g2.beginPath(); g2.arc(0, -10, 7, 0, Math.PI * 2); g2.fill();
+    g2.fillStyle = '#fff'; g2.beginPath(); g2.arc(-3, -11, 2, 0, Math.PI * 2); g2.arc(3, -11, 2, 0, Math.PI * 2); g2.fill();
+    g2.restore();
+  }
+  function drawCoffee(it) {
+    g2.save(); g2.translate(it.x, it.y); g2.rotate(it.rot * 0.3);
+    g2.strokeStyle = C.muted; g2.lineWidth = 2; g2.lineCap = 'round';
+    for (const sx of [-5, 3]) { g2.beginPath(); g2.moveTo(sx, -14); g2.bezierCurveTo(sx - 4, -18, sx + 4, -22, sx, -27 - Math.sin(it.t * 4) * 2); g2.stroke(); }
+    g2.fillStyle = C.sand; g2.beginPath(); g2.moveTo(-12, -10); g2.lineTo(12, -10); g2.lineTo(9, 13); g2.lineTo(-9, 13); g2.closePath(); g2.fill();
+    g2.strokeStyle = C.sand; g2.lineWidth = 3.5; g2.beginPath(); g2.arc(13, 0, 6, -Math.PI / 2, Math.PI / 2); g2.stroke();
+    g2.fillStyle = '#6b3f2a'; g2.fillRect(-11, -10, 22, 4);
+    g2.restore();
+  }
+
+  // Mini Gabriel carregando a tabela na cabeça
+  function drawPlayer() {
+    const x = G.px, gy = GH - 22, f = G.facing, moving = G.state === 'play' && Math.abs(G.tx - G.px) > 2;
+    const legA = moving ? Math.sin(G.walk) * 6 : 0;
+    const top = look.tee ? '#f1efe9' : '#1c2033';
+    g2.lineJoin = 'round'; g2.lineCap = 'round'; g2.strokeStyle = INK; g2.lineWidth = 3;
+    g2.fillStyle = 'rgba(0,0,0,.35)'; g2.beginPath(); g2.ellipse(x, gy + 4, 26, 6, 0, 0, Math.PI * 2); g2.fill();
+    g2.fillStyle = '#22263a';
+    rr(x - 13 + legA * 0.5, gy - 26, 11, 24, 5); g2.fill(); g2.stroke();
+    rr(x + 2 - legA * 0.5, gy - 26, 11, 24, 5); g2.fill(); g2.stroke();
+    g2.fillStyle = '#f2f0ea';
+    rr(x - 16 + legA * 0.5, gy - 6, 16, 8, 4); g2.fill(); g2.stroke();
+    rr(x + 1 - legA * 0.5, gy - 6, 16, 8, 4); g2.fill(); g2.stroke();
+    g2.strokeStyle = INK; g2.lineWidth = 12;
+    g2.beginPath(); g2.moveTo(x - 17, gy - 56); g2.lineTo(x - 40, gy - 100); g2.moveTo(x + 17, gy - 56); g2.lineTo(x + 40, gy - 100); g2.stroke();
+    g2.strokeStyle = top; g2.lineWidth = 8; g2.stroke();
+    g2.fillStyle = SKIN; g2.strokeStyle = INK; g2.lineWidth = 2.5;
+    for (const sx of [-40, 40]) { g2.beginPath(); g2.arc(x + sx, gy - 104, 6, 0, Math.PI * 2); g2.fill(); g2.stroke(); }
+    g2.fillStyle = top; g2.lineWidth = 3;
+    rr(x - 21, gy - 64, 42, 42, 13); g2.fill(); g2.stroke();
+    if (!look.tee) {
+      g2.strokeStyle = '#f2f0ea'; g2.lineWidth = 2.5;
+      g2.beginPath(); g2.moveTo(x - 6, gy - 58); g2.lineTo(x - 7, gy - 44); g2.moveTo(x + 6, gy - 58); g2.lineTo(x + 7, gy - 44); g2.stroke();
+      g2.strokeStyle = '#3a4060'; g2.lineWidth = 2; g2.beginPath(); g2.moveTo(x, gy - 56); g2.lineTo(x, gy - 24); g2.stroke();
+    }
+    const hx = x, hy = gy - 82;
+    g2.strokeStyle = INK; g2.lineWidth = 3; g2.fillStyle = '#c08560';
+    g2.beginPath(); g2.arc(hx - 21, hy + 2, 5, 0, Math.PI * 2); g2.fill(); g2.stroke();
+    g2.beginPath(); g2.arc(hx + 21, hy + 2, 5, 0, Math.PI * 2); g2.fill(); g2.stroke();
+    g2.fillStyle = SKIN; g2.beginPath(); g2.ellipse(hx, hy, 21, 23, 0, 0, Math.PI * 2); g2.fill(); g2.stroke();
+    g2.fillStyle = HAIR;
+    g2.beginPath();
+    g2.moveTo(hx - 21, hy + 2);
+    g2.bezierCurveTo(hx - 26, hy - 22, hx - 6, hy - 30, hx + 6 * f, hy - 29);
+    g2.bezierCurveTo(hx + 22 * f, hy - 28, hx + 26, hy - 14, hx + 21, hy + 2);
+    g2.bezierCurveTo(hx + 16, hy - 8, hx + 6, hy - 12, hx, hy - 12);
+    g2.bezierCurveTo(hx - 8, hy - 12, hx - 16, hy - 8, hx - 21, hy + 2);
+    g2.closePath(); g2.fill(); g2.stroke();
+    if (look.cap) {
+      g2.fillStyle = '#8e96a3'; g2.beginPath(); g2.ellipse(hx, hy - 12, 22, 16, 0, Math.PI, 0); g2.fill(); g2.stroke();
+      g2.fillStyle = '#737b88'; g2.beginPath(); g2.ellipse(hx + 14 * f, hy - 12, 16, 4, 0, 0, Math.PI * 2); g2.fill(); g2.stroke();
+    }
+    let lx = 0;
+    const near = G.items.reduce((a, b) => (!a || b.y > a.y) && b.y < GH - 120 ? b : a, null);
+    if (near) lx = Math.max(-1, Math.min(1, (near.x - hx) / 120)) * 2.5;
+    g2.strokeStyle = INK; g2.lineWidth = 3.5;
+    g2.beginPath(); g2.moveTo(hx - 13, hy - 5); g2.lineTo(hx - 4, hy - 6); g2.moveTo(hx + 4, hy - 6); g2.lineTo(hx + 13, hy - 5); g2.stroke();
+    g2.fillStyle = INK;
+    if (G.mood === 'ouch') { g2.lineWidth = 2.5; g2.beginPath(); g2.moveTo(hx - 12, hy - 1); g2.lineTo(hx - 6, hy + 3); g2.lineTo(hx - 12, hy + 5); g2.moveTo(hx + 12, hy - 1); g2.lineTo(hx + 6, hy + 3); g2.lineTo(hx + 12, hy + 5); g2.stroke(); }
+    else { g2.beginPath(); g2.ellipse(hx - 8 + lx, hy + 2, 2.6, 3.2, 0, 0, Math.PI * 2); g2.ellipse(hx + 8 + lx, hy + 2, 2.6, 3.2, 0, 0, Math.PI * 2); g2.fill(); }
+    g2.fillStyle = 'rgba(224,144,125,.45)'; g2.beginPath(); g2.ellipse(hx - 13, hy + 9, 4, 2.5, 0, 0, Math.PI * 2); g2.ellipse(hx + 13, hy + 9, 4, 2.5, 0, 0, Math.PI * 2); g2.fill();
+    g2.lineWidth = 2.5; g2.strokeStyle = '#7a3a3c';
+    if (G.mood === 'smile') { g2.fillStyle = '#6b2f33'; g2.beginPath(); g2.arc(hx, hy + 11, 6, 0, Math.PI); g2.fill(); }
+    else if (G.mood === 'ouch') { g2.fillStyle = '#6b2f33'; g2.beginPath(); g2.ellipse(hx, hy + 14, 4, 5, 0, 0, Math.PI * 2); g2.fill(); }
+    else { g2.beginPath(); g2.moveTo(hx - 5, hy + 13); g2.quadraticCurveTo(hx, hy + 15, hx + 5, hy + 13); g2.stroke(); }
+    const tw = 104, ty = GH - 128;
+    const name = LEVEL_TABLES[Math.min(G.level, LEVEL_TABLES.length - 1)].id;
+    g2.fillStyle = C.bg2; g2.strokeStyle = C.sand; g2.lineWidth = 2;
+    rr(x - tw / 2, ty, tw, 22, 6); g2.fill(); g2.stroke();
+    g2.fillStyle = C.sand; g2.beginPath(); g2.roundRect(x - tw / 2, ty, tw, 9, [6, 6, 0, 0]); g2.fill();
+    g2.fillStyle = C.fg; g2.font = `500 10px ${MONO}`; g2.textAlign = 'center'; g2.textBaseline = 'middle';
+    g2.fillText(name, x, ty + 15.5); g2.textAlign = 'left';
+  }
+
+  function render() {
+    g2.save();
+    g2.clearRect(0, 0, GW, GH);
+    if (G.shake > 0.3) g2.translate((Math.random() - .5) * G.shake, (Math.random() - .5) * G.shake);
+    g2.fillStyle = C.line;
+    for (let y = 12; y < GH - 24; y += 24) for (let x = 12; x < GW; x += 24) g2.fillRect(x, y, 1.5, 1.5);
+    g2.fillStyle = C.bg3; g2.fillRect(0, GH - 20, GW, 20);
+    g2.fillStyle = C.line; g2.fillRect(0, GH - 20, GW, 2);
+    for (const it of G.items) it.kind === 'bug' ? drawBug(it) : it.kind === 'coffee' ? drawCoffee(it) : drawData(it);
+    drawPlayer();
+    for (const p of G.fx) { g2.globalAlpha = Math.max(0, Math.min(1, p.life * 1.6)); g2.fillStyle = p.c; g2.beginPath(); g2.arc(p.x, p.y, p.r, 0, Math.PI * 2); g2.fill(); }
+    g2.globalAlpha = 1; g2.textAlign = 'center'; g2.textBaseline = 'middle';
+    for (const tx of G.texts) { g2.globalAlpha = Math.max(0, tx.life); g2.fillStyle = tx.color; g2.font = `500 13px ${MONO}`; g2.fillText(tx.text, Math.max(90, Math.min(GW - 90, tx.x)), tx.y); }
+    g2.globalAlpha = 1;
+    if (G.banner && G.state === 'play') {
+      g2.globalAlpha = Math.min(1, G.banner.life * 2);
+      g2.fillStyle = C.sand; g2.font = `800 ${GW < 500 ? 26 : 38}px ${DISPLAY}`;
+      g2.fillText(G.banner.text, GW / 2, GH * 0.38);
+      g2.globalAlpha = 1;
+    }
+    g2.textAlign = 'left';
+    g2.restore();
+  }
+
+  let stageVisible = false, last = 0;
+  new IntersectionObserver(([e]) => { stageVisible = e.isIntersecting; }).observe(stage);
+  function gameFrame(t) {
+    requestAnimationFrame(gameFrame);
+    const dt = Math.min(0.033, (t - last) / 1000 || 0); last = t;
+    if (!stageVisible || document.hidden || document.body.classList.contains('locked')) return;
+    update(dt); render();
+  }
+
+  function pointerX(e) { const r = stage.getBoundingClientRect(); G.tx = e.clientX - r.left; }
+  stage.addEventListener('pointermove', pointerX);
+  stage.addEventListener('pointerdown', pointerX);
+  addEventListener('keydown', e => {
+    if (!stageVisible || G.state !== 'play') return;
+    if (e.key === 'ArrowLeft' || e.key === 'a') { G.keys = -1; e.preventDefault(); }
+    if (e.key === 'ArrowRight' || e.key === 'd') { G.keys = 1; e.preventDefault(); }
+  });
+  addEventListener('keyup', e => {
+    if ((e.key === 'ArrowLeft' || e.key === 'a') && G.keys < 0) G.keys = 0;
+    if ((e.key === 'ArrowRight' || e.key === 'd') && G.keys > 0) G.keys = 0;
+  });
+
+  /* ---------- Telas ---------- */
+  let current = null, lastTrigger = null, typing = 0;
+  function typeQuery(scr) {
+    const q = scr.querySelector('.query');
+    const text = scr.dataset.query;
+    const paint = n => {
+      const s = text.slice(0, n).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))
+        .replace(/\b(SELECT|FROM|WHERE|ORDER BY|GROUP BY|COUNT|DESC|INSERT INTO|VALUES)\b/g, '<span class="kw">$1</span>');
+      q.innerHTML = s + '<span class="caret"></span>';
+    };
+    clearInterval(typing);
+    if (reduce) return paint(text.length);
+    let n = 0;
+    typing = setInterval(() => { paint(++n); if (n >= text.length) clearInterval(typing); }, 22);
+  }
+  function open(id, origin) {
+    const scr = $('screen-' + id);
+    if (!scr) return;
+    if (current && current !== scr) { current.classList.remove('open'); current.hidden = true; }
+    const r = origin && origin.getBoundingClientRect ? origin.getBoundingClientRect() : null;
+    scr.style.setProperty('--ox', r ? r.left + r.width / 2 + 'px' : '50%');
+    scr.style.setProperty('--oy', r ? r.top + r.height / 2 + 'px' : '50%');
+    scr.hidden = false; scr.scrollTop = 0;
+    scr.querySelectorAll('.screen-body > *').forEach((el, i) => { el.classList.remove('reveal'); void el.offsetWidth; el.style.animationDelay = (0.25 + i * 0.07) + 's'; el.classList.add('reveal'); });
+    requestAnimationFrame(() => requestAnimationFrame(() => scr.classList.add('open')));
+    document.body.classList.add('locked');
+    current = scr;
+    typeQuery(scr);
+    scr.querySelector('.back').focus({ preventScroll: true });
+    try { history.replaceState(null, '', '#' + id); } catch {}
+  }
+  function close() {
+    if (!current) return;
+    const scr = current;
+    scr.classList.remove('open');
+    setTimeout(() => { if (!scr.classList.contains('open')) scr.hidden = true; }, reduce ? 0 : 600);
+    document.body.classList.remove('locked');
+    current = null;
+    if (lastTrigger && lastTrigger.focus) lastTrigger.focus({ preventScroll: true });
+    lastTrigger = null;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch {}
+  }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-open]');
+    if (t) { e.preventDefault(); if (!current) lastTrigger = t; open(t.dataset.open, t); return; }
+    if (e.target.closest('.back')) close();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  document.querySelectorAll('.project canvas').forEach(c => {
+    const g = c.getContext('2d'), seed = +c.dataset.seed;
+    for (let y = 6; y < 180; y += 10) for (let x = 6; x < 320; x += 10) {
+      const v = (Math.sin(x * 0.02 * seed + y * 0.03) + Math.cos(y * 0.025 * seed - x * 0.01 * (seed % 3 + 1)) + 2) / 4;
+      g.fillStyle = palette[Math.min(LEVELS - 1, Math.floor(v * LEVELS))];
+      g.beginPath(); g.arc(x, y, 1 + v * 3.4, 0, Math.PI * 2); g.fill();
+    }
+  });
+
+  const copyBtn = $('copy');
+  copyBtn.addEventListener('click', () => {
+    const text = $('mail').textContent;
+    const done = () => { copyBtn.textContent = 'Copiado'; setTimeout(() => copyBtn.textContent = 'Copiar e-mail', 1600); };
+    const fallback = () => { const s = getSelection(), r = document.createRange(); r.selectNodeContents($('mail')); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = 'Selecionado, use Ctrl+C'; };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
+  });
+
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { resizeHero(); place(); sizeStage(); }, 150); });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+    resizeHero(); place(); sizeStage(); hud();
+    requestAnimationFrame(heroFrame); requestAnimationFrame(gameFrame);
+    const start = location.hash.slice(1);
+    if (start && $('screen-' + start)) open(start, null);
+  });
+})();
+</script>
+</body>
+</html>
