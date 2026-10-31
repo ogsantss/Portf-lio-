@@ -33,6 +33,26 @@
   --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   color-scheme: dark;
 }
+@property --bg { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --bg-2 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --bg-3 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --fg { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --muted { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --steel { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --sand { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --ok { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --err { syntax: '<color>'; inherits: true; initial-value: transparent; }
+:root { transition: --bg .9s ease, --bg-2 .9s ease, --bg-3 .9s ease, --line .9s ease, --fg .9s ease, --muted .9s ease, --steel .9s ease, --sand .9s ease, --ok .9s ease, --err .9s ease; }
+/* areia: seção do jogo e rodapé */
+:root[data-tone="sand"] {
+  --bg: #e7e0d4; --bg-2: #efe9df; --bg-3: #dcd3c5; --line: #c9bdac;
+  --fg: #161412; --muted: #6a6157; --steel: #4d5764; --sand: #87653f; --ok: #56735a; --err: #a14f3d;
+}
+/* grafite: diagrama */
+:root[data-tone="graphite"] {
+  --bg: #141312; --bg-2: #1b1a18; --bg-3: #23211f; --line: #302d29;
+}
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); overflow-x: hidden; }
 body.locked { overflow: hidden; }
@@ -53,6 +73,20 @@ header .wrap { display: flex; align-items: center; justify-content: space-betwee
 nav { display: flex; gap: 4px; flex-wrap: wrap; }
 nav a { font: 500 12px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-decoration: none; padding: 8px 10px; border-radius: 6px; }
 nav a:hover, nav a:focus-visible { color: var(--fg); background: var(--bg-2); outline: none; }
+
+/* Cursor: uma bolinha que inverte as cores por baixo e cresce sobre o que é clicável */
+.cursor { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  * { cursor: none !important; }
+  .cursor {
+    display: block; position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
+    width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
+    background: #fff; mix-blend-mode: difference;
+    transition: width .3s cubic-bezier(.2, .8, .2, 1), height .3s cubic-bezier(.2, .8, .2, 1), margin .3s cubic-bezier(.2, .8, .2, 1), opacity .2s;
+  }
+  .cursor.big { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+  .cursor.off { opacity: 0; }
+}
 
 /* Hero */
 .hero { position: relative; height: clamp(540px, 84vh, 800px); overflow: hidden; }
@@ -107,7 +141,7 @@ h1 em { font-style: normal; color: var(--sand); }
 
 /* Seção explorar */
 .explore { border-top: 1px solid var(--line); }
-.explore-head { padding-block: 64px 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.explore-head { padding-block: 120px 40px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
 .explore-head h2 { font: 800 clamp(36px, 6vw, 72px)/0.95 var(--display); letter-spacing: -0.035em; margin: 0; max-width: 12ch; text-wrap: balance; }
 .explore-head h2 em { font-style: normal; color: var(--sand); }
 .explore-head p { margin: 0; max-width: 40ch; color: var(--muted); }
@@ -144,7 +178,7 @@ code { font: 500 13px var(--mono); color: var(--fg); background: var(--bg-2); pa
 .legend svg { width: 22px; height: 22px; }
 
 /* Diagrama */
-.board-wrap { padding-bottom: 72px; }
+.board-wrap { padding-block: 40px 120px; }
 .board {
   position: relative; height: 900px; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
   background-color: var(--bg);
@@ -156,7 +190,7 @@ code { font: 500 13px var(--mono); color: var(--fg); background: var(--bg-2); pa
 .rel.hot { stroke: var(--steel); stroke-dasharray: none; stroke-width: 2; }
 .card-label { font: 500 11px var(--mono); fill: var(--muted); }
 .card-label.hot { fill: var(--sand); }
-.tbl { position: absolute; width: 230px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px -12px rgb(0 0 0 / .6); user-select: none; transition: border-color .2s, box-shadow .3s; }
+.tbl { position: absolute; width: 230px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; user-select: none; transition: border-color .2s, box-shadow .3s; }
 .tbl:hover, .tbl.hot, .tbl:focus-within { border-color: var(--steel); }
 .tbl.flash { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sand) 45%, transparent); }
 .tbl.committed { border-color: color-mix(in srgb, var(--ok) 60%, var(--line)); }
@@ -260,6 +294,7 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
 </style>
 </head>
 <body>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
 <header>
   <div class="wrap">
     <a class="logo" href="#topo">gabriel<span>.</span></a>
@@ -273,9 +308,8 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
 </header>
 
 <main id="topo">
-  <div class="hero" id="hero">
+  <div class="hero" id="hero" data-tone="dark">
     <canvas id="field" aria-label="Holograma de uma máscara metálica saindo da lateral da tela"></canvas>
-    <span class="holo-tag" aria-hidden="true">projeção · mk-01</span>
 
     <div class="wrap hero-copy">
       <div class="doc-meta"><span>portfólio · ficha nº 0001</span><span>base legal: consentimento · LGPD art. 7º, I</span></div>
@@ -294,13 +328,13 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   </div>
 
   <section class="explore" id="explorar">
-    <div class="wrap explore-head">
+    <div class="wrap explore-head" data-tone="sand">
       <h2>O <em>SGBD</em></h2>
-      <p>Jogue para popular as tabelas, ou rode <code>SELECT *</code> direto no diagrama para abrir cada parte da minha história.</p>
+      <p>Jogue para popular as tabelas ou abra cada uma com <code>SELECT *</code>.</p>
     </div>
 
     <div class="wrap">
-      <div class="game-card">
+      <div class="game-card" data-tone="sand">
         <div class="hud">
           <div class="q"><span class="kw">INSERT INTO</span> <b id="gTable">skills</b> VALUES (?)</div>
           <div class="hud-stats">
@@ -329,7 +363,7 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
       </div>
     </div>
 
-    <div class="wrap board-wrap">
+    <div class="wrap board-wrap" data-tone="graphite">
       <div class="board" id="board">
         <svg id="rels" aria-hidden="true"></svg>
 
@@ -401,7 +435,7 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   </section>
 </main>
 
-<footer><div class="wrap"><span>© 2026 Gabriel Souza</span></div></footer>
+<footer data-tone="sand"><div class="wrap"><span>© 2026 Gabriel Souza</span></div></footer>
 
 <div class="screen" id="screen-pessoa" role="dialog" aria-modal="true" aria-label="Sobre" hidden data-query="SELECT * FROM pessoa WHERE id = 1;">
   <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
@@ -1265,6 +1299,43 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
     const fallback = () => { const s = getSelection(), r = document.createRange(); r.selectNodeContents($('mail')); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = 'Selecionado, use Ctrl+C'; };
     try { navigator.clipboard.writeText(text).then(done, fallback); } catch { fallback(); }
   });
+
+  /* ---------- Cursor e tons de rolagem ---------- */
+  const dot = $('cursor');
+  if (dot && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let mx = -100, my = -100, cx = -100, cy = -100;
+    addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+    document.addEventListener('pointerover', e => {
+      const t = e.target;
+      dot.classList.toggle('big', !!t.closest('a, button, label, .tbl-head, .pii, .chip, #field'));
+      dot.classList.toggle('off', !!t.closest('.stage') && G.state === 'play');
+    });
+    document.addEventListener('pointerleave', () => dot.classList.add('off'));
+    document.addEventListener('pointerenter', () => dot.classList.remove('off'));
+    (function follow() {
+      const k = reduce ? 1 : 0.22;
+      cx += (mx - cx) * k; cy += (my - cy) * k;
+      dot.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  // cada bloco com data-tone pinta a página quando cruza o meio da tela
+  const KEYS = { bg: '--bg', bg2: '--bg-2', bg3: '--bg-3', line: '--line', fg: '--fg', muted: '--muted', steel: '--steel', sand: '--sand', ok: '--ok', err: '--err' };
+  let toneTimer = 0;
+  function refreshTokens() {
+    const cs = getComputedStyle(document.documentElement);
+    for (const k in KEYS) C[k] = cs.getPropertyValue(KEYS[k]).trim() || C[k];
+    hud();
+  }
+  const toneIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const tone = e.target.dataset.tone;
+    if (document.documentElement.dataset.tone === tone) return;
+    if (tone === 'dark') delete document.documentElement.dataset.tone; else document.documentElement.dataset.tone = tone;
+    clearTimeout(toneTimer); toneTimer = setTimeout(refreshTokens, reduce ? 0 : 950);
+  }), { rootMargin: '-50% 0px -50% 0px' });
+  document.querySelectorAll('[data-tone]').forEach(el => toneIO.observe(el));
 
   let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { resizeHero(); place(); sizeStage(); }, 150); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
