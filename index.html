@@ -570,7 +570,8 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   const tok = n => css.getPropertyValue(n).trim();
   const C = { bg: tok('--bg'), bg2: tok('--bg-2'), bg3: tok('--bg-3'), line: tok('--line'), fg: tok('--fg'), muted: tok('--muted'), steel: tok('--steel'), sand: tok('--sand'), ok: tok('--ok'), err: tok('--err') };
   const BODY = tok('--body'), MONO = tok('--mono'), DISPLAY = tok('--display');
-  const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  // aceita '#rrggbb' e 'rgb(r, g, b)', que é como o navegador devolve cores registradas com @property
+  const hex = h => h.startsWith('#') ? [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)) : (h.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
   const A = hex(C.steel), B = hex(C.sand);
   const LEVELS = 10;
   const palette = Array.from({ length: LEVELS }, (_, i) => {
