@@ -80,7 +80,7 @@ nav a:hover, nav a:focus-visible { color: var(--fg); background: var(--bg-2); ou
   * { cursor: none !important; }
   .cursor {
     display: block; position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
-    width: 12px; height: 12px; border-radius: 50%;
+    width: 10px; height: 10px; border-radius: 50%;
     background: #fff; mix-blend-mode: difference; will-change: transform;
     transition: opacity .2s;
   }
@@ -1303,13 +1303,13 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   /* ---------- Cursor e tons de rolagem ---------- */
   const dot = $('cursor');
   if (dot && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    let mx = -100, my = -100, cx = -100, cy = -100, sc = 1, target = 1, down = false, seen = false;
+    let mx = -100, my = -100, cx = -100, cy = -100, size = 10, target = 10, down = false, seen = false;
     const HOVER = 'a, button, label, .tbl-head, .pii';
     addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
       if (!seen) { cx = mx; cy = my; seen = true; }
       const t = e.target;
-      target = t.closest && t.closest(HOVER) ? 4.5 : 1;
+      target = t.closest && t.closest(HOVER) ? 28 : 10;
       dot.classList.toggle('off', !!(t.closest && t.closest('.stage')) && G.state === 'play');
     });
     document.documentElement.addEventListener('mouseleave', () => dot.classList.add('off'));
@@ -1319,8 +1319,10 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
     (function follow() {
       const k = reduce ? 1 : 0.45;
       cx += (mx - cx) * k; cy += (my - cy) * k;
-      sc += ((down ? target * 0.75 : target) - sc) * (reduce ? 1 : 0.2);
-      dot.style.transform = `translate3d(${cx - 6}px, ${cy - 6}px, 0) scale(${sc})`;
+      size += ((down ? target * 0.8 : target) - size) * (reduce ? 1 : 0.2);
+      const d = Math.round(size * 2) / 2;
+      dot.style.width = dot.style.height = d + 'px';
+      dot.style.transform = `translate3d(${cx - d / 2}px, ${cy - d / 2}px, 0)`;
       requestAnimationFrame(follow);
     })();
   }
