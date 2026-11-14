@@ -11,12 +11,12 @@
   img { max-width: 100%; }
   [hidden] { display: none !important; }
 </style>
-<title>Gabriel · Portfólio</title>
+<title>Gabriel Souza · Portfólio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: personagem ilustrado no topo; abaixo, um jogo que popula o "banco de dados de mim" e o diagrama que abre telas cheias */
+/* Layout: uma coluna quieta de texto à esquerda; à direita, um único campo de partículas que muda de forma com a navegação */
 :root {
   --bg: #040404;
   --bg-2: #0b0b0b;
@@ -32,26 +32,6 @@
   --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
   color-scheme: dark;
-}
-@property --bg { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --bg-2 { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --bg-3 { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --line { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --fg { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --muted { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --steel { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --sand { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --ok { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --err { syntax: '<color>'; inherits: true; initial-value: transparent; }
-:root { transition: --bg .9s ease, --bg-2 .9s ease, --bg-3 .9s ease, --line .9s ease, --fg .9s ease, --muted .9s ease, --steel .9s ease, --sand .9s ease, --ok .9s ease, --err .9s ease; }
-/* areia: seção do jogo e rodapé */
-:root[data-tone="sand"] {
-  --bg: #e7e0d4; --bg-2: #efe9df; --bg-3: #dcd3c5; --line: #c9bdac;
-  --fg: #161412; --muted: #6a6157; --steel: #4d5764; --sand: #87653f; --ok: #56735a; --err: #a14f3d;
-}
-/* grafite: diagrama */
-:root[data-tone="graphite"] {
-  --bg: #141312; --bg-2: #1b1a18; --bg-3: #23211f; --line: #302d29;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); overflow-x: hidden; }
@@ -88,55 +68,58 @@ nav a:hover, nav a:focus-visible { color: var(--fg); background: var(--bg-2); ou
 }
 
 /* Hero */
-.hero { position: relative; height: clamp(540px, 84vh, 800px); overflow: hidden; }
-#field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: crosshair; }
-.hero::after {
-  content: ""; position: absolute; z-index: 1; top: 10%; bottom: 10%; right: 0; width: 2px; pointer-events: none;
-  background: linear-gradient(transparent, color-mix(in srgb, var(--steel) 80%, white), transparent);
-  box-shadow: 0 0 28px 6px color-mix(in srgb, var(--steel) 30%, transparent);
-}
-.holo-tag {
-  position: absolute; z-index: 2; top: 20px; right: max(20px, env(safe-area-inset-right, 0px));
-  font: 400 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
-}
-.rv { transition: opacity .9s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
-.rv.pending { opacity: 0; transform: translateY(28px); }
-.hero-copy { will-change: transform, opacity; }
-.doc-meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font: 500 11px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.doc-meta span:first-child { color: var(--sand); }
-.pii { --pii-c: var(--fg); position: relative; border-radius: 3px; outline: none; transition: color .4s ease, background-color .4s ease, box-shadow .4s ease; }
-h1 .pii { --pii-c: var(--sand); color: var(--pii-c); }
-.lede .pii { color: var(--pii-c); text-decoration: underline dashed color-mix(in srgb, var(--sand) 55%, transparent); text-underline-offset: 5px; text-decoration-thickness: 1px; }
-.redact .pii { color: color-mix(in srgb, var(--pii-c) 45%, transparent); text-decoration-color: color-mix(in srgb, var(--muted) 40%, transparent); cursor: help; }
+#field { position: fixed; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; z-index: 0; transition: opacity .6s ease; }
+main, footer { position: relative; z-index: 1; }
+.hero { padding-block: clamp(88px, 20vh, 200px) clamp(56px, 10vh, 110px); }
+.hero-copy { display: grid; gap: 22px; max-width: 640px; justify-items: start; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 700 clamp(40px, 6.2vw, 84px)/1 var(--display); letter-spacing: -0.035em; margin: 0; text-wrap: balance; }
+h1 i { font-style: normal; color: var(--sand); }
+.lede { max-width: 44ch; color: var(--muted); margin: 0; font-size: 18px; }
+.pii { --pii-c: var(--fg); position: relative; border-radius: 3px; outline: none; transition: color .4s ease; }
+h1 .pii { color: var(--pii-c); }
+.redact .pii { color: color-mix(in srgb, var(--pii-c) 45%, transparent); }
 .redact .pii:hover, .redact .pii:focus-visible { color: var(--pii-c); }
-.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
 .switch {
   display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
-  font: 500 12px/1 var(--mono); color: var(--fg); background: none; border: 0; padding: 6px 0;
+  font: 400 12px/1 var(--mono); color: var(--muted); background: none; border: 0; padding: 6px 0;
 }
-.switch .track { width: 34px; height: 20px; border-radius: 999px; background: var(--bg-3); border: 1px solid var(--line); position: relative; transition: background-color .3s; }
-.switch i { position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), background-color .3s; }
-.switch[aria-checked="true"] .track { background: color-mix(in srgb, var(--sand) 25%, var(--bg-3)); border-color: var(--sand); }
-.switch[aria-checked="true"] i { transform: translateX(14px); background: var(--sand); }
+.switch .track { width: 30px; height: 18px; border-radius: 999px; background: var(--bg-3); border: 1px solid var(--line); position: relative; transition: background-color .3s; }
+.switch i { position: absolute; top: 3px; left: 3px; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), background-color .3s; }
+.switch[aria-checked="true"] .track { border-color: var(--sand); }
+.switch[aria-checked="true"] i { transform: translateX(12px); background: var(--sand); }
 .switch:focus-visible { outline: 2px solid var(--steel); outline-offset: 4px; border-radius: 4px; }
-
-.hero-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; padding-block: 48px; pointer-events: none; }
-.hero-copy > * { pointer-events: auto; }
-.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--sand); }
-h1 { font: 800 clamp(56px, 11vw, 148px)/0.88 var(--display); letter-spacing: -0.045em; margin: 0; max-width: 8ch; text-wrap: balance; }
-h1 em { font-style: normal; color: var(--sand); }
-.lede { max-width: 40ch; color: var(--muted); margin: 0; font-size: 17px; }
-.lede strong { color: var(--fg); font-weight: 600; }
 .btn { font: 600 14px/1 var(--body); color: var(--bg); background: var(--sand); border: 0; border-radius: 999px; padding: 12px 18px; cursor: pointer; }
 .btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
 .btn:hover { filter: brightness(1.08); }
 .btn:focus-visible { outline: 2px solid var(--steel); outline-offset: 3px; }
 .hint { font: 400 12px/1.4 var(--mono); color: var(--muted); }
-.morphs { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.chip { font: 500 12px/1 var(--mono); color: var(--fg); background: var(--bg-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; cursor: pointer; }
-.chip[aria-pressed="true"] { border-color: var(--steel); color: var(--sand); }
-.chip:hover { border-color: var(--steel); }
-.chip:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+
+/* Índice: a navegação inteira do site */
+.index { list-style: none; margin: 0; padding: 0; max-width: 720px; }
+.row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+  padding: 22px 0; border-top: 1px solid var(--line); text-decoration: none; color: var(--fg);
+  transition: opacity .3s ease, padding-left .4s cubic-bezier(.2, .8, .2, 1);
+}
+.index li:last-child .row { border-bottom: 1px solid var(--line); }
+.row-t { font: 500 clamp(26px, 3.6vw, 44px)/1.05 var(--display); letter-spacing: -0.025em; }
+.row-d { font: 400 12px/1.4 var(--mono); color: var(--muted); text-align: right; min-width: 0; }
+.index:hover .row, .index:focus-within .row { opacity: .35; }
+.index .row:hover, .index .row:focus-visible { opacity: 1; padding-left: 14px; outline: none; }
+.play {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  max-width: 720px; margin: 48px 0 clamp(80px, 14vh, 160px); padding: 24px 26px;
+  border: 1px solid var(--line); border-radius: 16px; background: var(--bg-2);
+  text-decoration: none; color: var(--fg); transition: border-color .3s, background-color .3s;
+}
+.play-txt { display: grid; gap: 6px; min-width: 0; }
+.play small { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sand); }
+.play b { font: 500 clamp(22px, 2.6vw, 30px)/1.1 var(--display); letter-spacing: -0.02em; }
+.play-txt > span { color: var(--muted); font-size: 15px; }
+.play-btn { font: 600 14px/1 var(--body); color: var(--bg); background: var(--sand); border-radius: 999px; padding: 13px 20px; white-space: nowrap; transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.play:hover, .play:focus-visible { border-color: var(--sand); outline: none; }
+.play:hover .play-btn, .play:focus-visible .play-btn { transform: translateX(4px); }
 
 /* Seção explorar */
 .explore { border-top: 1px solid var(--line); }
@@ -290,151 +273,59 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   .rv { transition: none; }
   .project { transition: none; }
 }
+
+/* telas abrem com um fade discreto */
+.screen { clip-path: none; opacity: 0; transform: translateY(14px); transition: opacity .35s ease, transform .45s cubic-bezier(.2, .8, .2, 1); }
+.screen.open { clip-path: none; opacity: 1; transform: none; }
+.pg { padding-block: 0; gap: 0; }
+.pg > * { width: 100%; }
+.pg .explore-head { padding-block: 56px 24px; }
+.pg .board-wrap { padding-block: 20px 96px; }
+@media (max-width: 760px) {
+  .hero { height: auto; }
+  .hero-copy { padding-block: 0; gap: 18px; }
+  .row-d { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .row, #field { transition: none; } }
 </style>
 </head>
 <body>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
+<canvas id="field" aria-hidden="true"></canvas>
 <header>
   <div class="wrap">
     <a class="logo" href="#topo">gabriel<span>.</span></a>
-    <nav aria-label="Seções">
-      <a href="#projetos" data-open="projetos">Projetos</a>
-      <a href="#pessoa" data-open="pessoa">Sobre</a>
-      <a href="#skills" data-open="skills">Skills</a>
-      <a href="#contato" data-open="contato">Contato</a>
-    </nav>
+    <nav aria-label="Atalhos"><a href="#contato" data-open="contato">Contato</a></nav>
   </div>
 </header>
 
 <main id="topo">
-  <div class="hero" id="hero" data-tone="dark">
-    <canvas id="field" aria-label="Holograma de uma máscara metálica saindo da lateral da tela"></canvas>
-
-    <div class="wrap hero-copy">
-      <div class="doc-meta"><span>portfólio · ficha nº 0001</span><span>base legal: consentimento · LGPD art. 7º, I</span></div>
-      <h1>Oi, eu sou <em class="pii" data-kind="titular">Gabriel</em></h1>
-      <div class="controls">
-        <button class="switch" id="privacy" role="switch" aria-checked="false"><span class="track"><i></i></span>modo privacidade</button>
-        <div class="morphs" role="group" aria-label="Mudar a forma das partículas">
-          <button class="chip" data-shape="photo" aria-pressed="true">máscara</button>
-          <button class="chip" data-shape="SQL" aria-pressed="false">SQL</button>
-          <button class="chip" data-shape="ML" aria-pressed="false">ML</button>
-          <button class="chip" data-shape="Python" aria-pressed="false">Python</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <section class="explore" id="explorar">
-    <div class="wrap explore-head" data-tone="sand">
-      <h2>O <em>SGBD</em></h2>
-      <p>Jogue para popular as tabelas ou abra cada uma com <code>SELECT *</code>.</p>
-    </div>
-
-    <div class="wrap">
-      <div class="game-card" data-tone="sand">
-        <div class="hud">
-          <div class="q"><span class="kw">INSERT INTO</span> <b id="gTable">skills</b> VALUES (?)</div>
-          <div class="hud-stats">
-            <div class="hearts" id="gLives" aria-label="vidas"></div>
-            <span>pontos<b id="gScore">0</b></span>
-            <span>combo<b id="gCombo">x1</b></span>
-          </div>
-          <ol class="prog" id="gProg"></ol>
-        </div>
-        <div class="stage idle" id="stage" tabindex="0">
-          <canvas id="gameCanvas" aria-label="Jogo: pegue os dados da tabela pedida"></canvas>
-          <div class="overlay" id="gOverlay">
-            <div>
-              <h3 id="gTitle">Popule o <em>banco</em></h3>
-              <p id="gText">Mova o Gabriel com o mouse, o dedo ou as setas. Pegue só os dados da tabela pedida no topo. Cada tabela precisa de 5 linhas para dar <code>COMMIT</code>.</p>
-              <div class="legend">
-                <span><svg viewBox="0 0 22 22"><rect x="1" y="5" width="20" height="12" rx="4" fill="#1d1c1a" stroke="#9aa3ad" stroke-width="1.5"/><circle cx="6" cy="11" r="2" fill="#9aa3ad"/></svg>dado</span>
-                <span><svg viewBox="0 0 22 22"><ellipse cx="11" cy="13" rx="7" ry="6" fill="#c47a66"/><circle cx="11" cy="6" r="3.4" fill="#24170f"/><path d="M3 10l3 1M3 15l3-1M19 10l-3 1M19 15l-3-1" stroke="#c47a66" stroke-width="1.5"/></svg>bug, tira vida</span>
-                <span><svg viewBox="0 0 22 22"><path d="M5 8h11l-1.5 10h-8z" fill="#c2a27c"/><path d="M16 10c3 0 3 4 0 4" stroke="#c2a27c" stroke-width="1.6" fill="none"/><path d="M8 5c0-2 2-2 2-4M12 5c0-2 2-2 2-4" stroke="#8e877e" stroke-width="1.2" fill="none"/></svg>café, recupera vida</span>
-              </div>
-              <button class="btn" id="gStart">Jogar</button>
-              <span class="hint" id="gBest"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="wrap board-wrap" data-tone="graphite">
-      <div class="board" id="board">
-        <svg id="rels" aria-hidden="true"></svg>
-
-        <div class="tbl" data-id="pessoa">
-          <div class="tbl-head"><i></i>pessoa<small>1 linha</small></div>
-          <ul>
-            <li><b>PK</b><span>id</span><span>number</span></li>
-            <li><b></b><span>nome</span><span>varchar</span></li>
-            <li><b></b><span>foco</span><span>varchar</span></li>
-            <li><b></b><span>cidade</span><span>varchar</span></li>
-          </ul>
-          <button class="run" data-open="pessoa">SELECT * <span>→</span></button>
-        </div>
-
-        <div class="tbl" data-id="experiencia">
-          <div class="tbl-head"><i></i>experiencia<small>1 linha</small></div>
-          <ul>
-            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
-            <li><b></b><span>empresa</span><span>varchar</span></li>
-            <li><b></b><span>cargo</span><span>varchar</span></li>
-            <li><b></b><span>inicio</span><span>date</span></li>
-          </ul>
-          <button class="run" data-open="experiencia">SELECT * <span>→</span></button>
-        </div>
-
-        <div class="tbl" data-id="projetos">
-          <div class="tbl-head"><i></i>projetos<small>5 linhas</small></div>
-          <ul>
-            <li><b>PK</b><span>id</span><span>number</span></li>
-            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
-            <li><b></b><span>titulo</span><span>varchar</span></li>
-            <li><b></b><span>status</span><span>varchar</span></li>
-          </ul>
-          <button class="run" data-open="projetos">SELECT * <span>→</span></button>
-        </div>
-
-        <div class="tbl" data-id="skills">
-          <div class="tbl-head"><i></i>skills<small>5 grupos</small></div>
-          <ul>
-            <li><b>PK</b><span>id</span><span>number</span></li>
-            <li><b></b><span>nome</span><span>varchar</span></li>
-            <li><b></b><span>categoria</span><span>varchar</span></li>
-          </ul>
-          <button class="run" data-open="skills">SELECT * <span>→</span></button>
-        </div>
-
-        <div class="tbl" data-id="formacao">
-          <div class="tbl-head"><i></i>formacao<small>3 linhas</small></div>
-          <ul>
-            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
-            <li><b></b><span>curso</span><span>varchar</span></li>
-            <li><b></b><span>instituicao</span><span>varchar</span></li>
-            <li><b></b><span>periodo</span><span>varchar</span></li>
-          </ul>
-          <button class="run" data-open="formacao">SELECT * <span>→</span></button>
-        </div>
-
-        <div class="tbl" data-id="contato">
-          <div class="tbl-head"><i></i>contato<small>3 linhas</small></div>
-          <ul>
-            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
-            <li><b></b><span>canal</span><span>varchar</span></li>
-            <li><b></b><span>valor</span><span>varchar</span></li>
-          </ul>
-          <button class="run" data-open="contato">SELECT * <span>→</span></button>
-        </div>
-      </div>
+  <section class="wrap hero" id="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Data Science · São Paulo</span>
+      <h1>Oi, eu sou <span class="pii" data-kind="titular">Gabriel</span><i>.</i></h1>
+      <p class="lede">Trabalho com governança e privacidade de dados no QuintoAndar e estudo Data Science na FIAP.</p>
+      <button class="switch" id="privacy" role="switch" aria-checked="false"><span class="track"><i></i></span>modo privacidade</button>
     </div>
   </section>
+
+  <div class="wrap">
+    <ul class="index" id="index">
+      <li><a class="row" href="#pessoa" data-open="pessoa" data-shape="photo"><span class="row-t">Sobre</span><span class="row-d">quem eu sou</span></a></li>
+      <li><a class="row" href="#experiencia" data-open="experiencia" data-shape="house"><span class="row-t">Experiência</span><span class="row-d">QuintoAndar · desde jan 2026</span></a></li>
+      <li><a class="row" href="#projetos" data-open="projetos" data-shape="bars"><span class="row-t">Projetos</span><span class="row-d">5 projetos · 3 em andamento</span></a></li>
+      <li><a class="row" href="#formacao" data-open="formacao" data-shape="cap"><span class="row-t">Formação</span><span class="row-d">FIAP · Senac · Etec</span></a></li>
+      <li><a class="row" href="#skills" data-open="skills" data-shape="braces"><span class="row-t">Skills</span><span class="row-d">Python · SQL · Power BI</span></a></li>
+      <li><a class="row" href="#contato" data-open="contato" data-shape="at"><span class="row-t">Contato</span><span class="row-d">e-mail · LinkedIn · GitHub</span></a></li>
+    </ul>
+    <a class="play" href="#playground" data-open="playground" data-shape="pad">
+      <span class="play-txt"><small>Playground</small><b>Jogue: popule o banco</b><span>Pegue os dados certos, desvie dos bugs e veja o meu modelo de dados.</span></span>
+      <span class="play-btn">Jogar →</span>
+    </a>
+  </div>
 </main>
 
-<footer data-tone="sand"><div class="wrap"><span>© 2026 Gabriel Souza</span></div></footer>
+<footer><div class="wrap"><span>© 2026 Gabriel Souza</span></div></footer>
 
 <div class="screen" id="screen-pessoa" role="dialog" aria-modal="true" aria-label="Sobre" hidden data-query="SELECT * FROM pessoa WHERE id = 1;">
   <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
@@ -562,6 +453,117 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   </div>
 </div>
 
+<div class="screen" id="screen-playground" role="dialog" aria-modal="true" aria-label="Playground" hidden data-query="SELECT * FROM playground;">
+  <div class="screen-bar"><div class="wrap"><span class="query"></span><button class="btn ghost back">← Voltar</button></div></div>
+  <div class="screen-body pg">
+
+    <div class="wrap explore-head">
+      <h2>O <em>SGBD</em></h2>
+      <p>Jogue para popular as tabelas ou abra cada uma com <code>SELECT *</code>.</p>
+    </div>
+
+    <div class="wrap">
+      <div class="game-card">
+        <div class="hud">
+          <div class="q"><span class="kw">INSERT INTO</span> <b id="gTable">skills</b> VALUES (?)</div>
+          <div class="hud-stats">
+            <div class="hearts" id="gLives" aria-label="vidas"></div>
+            <span>pontos<b id="gScore">0</b></span>
+            <span>combo<b id="gCombo">x1</b></span>
+          </div>
+          <ol class="prog" id="gProg"></ol>
+        </div>
+        <div class="stage idle" id="stage" tabindex="0">
+          <canvas id="gameCanvas" aria-label="Jogo: pegue os dados da tabela pedida"></canvas>
+          <div class="overlay" id="gOverlay">
+            <div>
+              <h3 id="gTitle">Popule o <em>banco</em></h3>
+              <p id="gText">Mova o Gabriel com o mouse, o dedo ou as setas. Pegue só os dados da tabela pedida no topo. Cada tabela precisa de 5 linhas para dar <code>COMMIT</code>.</p>
+              <div class="legend">
+                <span><svg viewBox="0 0 22 22"><rect x="1" y="5" width="20" height="12" rx="4" fill="#1d1c1a" stroke="#9aa3ad" stroke-width="1.5"/><circle cx="6" cy="11" r="2" fill="#9aa3ad"/></svg>dado</span>
+                <span><svg viewBox="0 0 22 22"><ellipse cx="11" cy="13" rx="7" ry="6" fill="#c47a66"/><circle cx="11" cy="6" r="3.4" fill="#24170f"/><path d="M3 10l3 1M3 15l3-1M19 10l-3 1M19 15l-3-1" stroke="#c47a66" stroke-width="1.5"/></svg>bug, tira vida</span>
+                <span><svg viewBox="0 0 22 22"><path d="M5 8h11l-1.5 10h-8z" fill="#c2a27c"/><path d="M16 10c3 0 3 4 0 4" stroke="#c2a27c" stroke-width="1.6" fill="none"/><path d="M8 5c0-2 2-2 2-4M12 5c0-2 2-2 2-4" stroke="#8e877e" stroke-width="1.2" fill="none"/></svg>café, recupera vida</span>
+              </div>
+              <button class="btn" id="gStart">Jogar</button>
+              <span class="hint" id="gBest"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap board-wrap">
+      <div class="board" id="board">
+        <svg id="rels" aria-hidden="true"></svg>
+
+        <div class="tbl" data-id="pessoa">
+          <div class="tbl-head"><i></i>pessoa<small>1 linha</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b></b><span>nome</span><span>varchar</span></li>
+            <li><b></b><span>foco</span><span>varchar</span></li>
+            <li><b></b><span>cidade</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="pessoa">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="experiencia">
+          <div class="tbl-head"><i></i>experiencia<small>1 linha</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>empresa</span><span>varchar</span></li>
+            <li><b></b><span>cargo</span><span>varchar</span></li>
+            <li><b></b><span>inicio</span><span>date</span></li>
+          </ul>
+          <button class="run" data-open="experiencia">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="projetos">
+          <div class="tbl-head"><i></i>projetos<small>5 linhas</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>titulo</span><span>varchar</span></li>
+            <li><b></b><span>status</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="projetos">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="skills">
+          <div class="tbl-head"><i></i>skills<small>5 grupos</small></div>
+          <ul>
+            <li><b>PK</b><span>id</span><span>number</span></li>
+            <li><b></b><span>nome</span><span>varchar</span></li>
+            <li><b></b><span>categoria</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="skills">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="formacao">
+          <div class="tbl-head"><i></i>formacao<small>3 linhas</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>curso</span><span>varchar</span></li>
+            <li><b></b><span>instituicao</span><span>varchar</span></li>
+            <li><b></b><span>periodo</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="formacao">SELECT * <span>→</span></button>
+        </div>
+
+        <div class="tbl" data-id="contato">
+          <div class="tbl-head"><i></i>contato<small>3 linhas</small></div>
+          <ul>
+            <li><b>FK</b><span>pessoa_id</span><span>number</span></li>
+            <li><b></b><span>canal</span><span>varchar</span></li>
+            <li><b></b><span>valor</span><span>varchar</span></li>
+          </ul>
+          <button class="run" data-open="contato">SELECT * <span>→</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -581,12 +583,11 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   const SKIN = '#c98e68', HAIR = '#17141c', INK = '#120f16';
   const look = { cap: false, tee: false };  // visual do mini Gabriel no jogo
 
-  /* ---------- Holograma: máscara saindo da lateral da tela ---------- */
-  const hero = $('hero'), cvs = $('field'), ctx = cvs.getContext('2d'), copy = hero.querySelector('.hero-copy');
-  let W = 0, H = 0, step = 6, particles = [], shape = 'photo', source = null, heroVisible = true;
-  let scroll = 0, glitch = 0;
+  /* ---------- Partículas: uma máscara discreta que muda de forma com a navegação ---------- */
+  const cvs = $('field'), ctx = cvs.getContext('2d'), copy = document.querySelector('.hero-copy');
+  let W = 0, H = 0, step = 5, particles = [], shape = 'photo';
   const mouse = { x: -9999, y: -9999, active: false };
-  // grafite → aço → branco: a luz da projeção
+  // grafite → prata → branco
   const HOLO = (() => {
     const stops = [hex('#1f2124'), hex('#8d96a0'), hex('#f2efe9')];
     return Array.from({ length: LEVELS }, (_, i) => {
@@ -594,7 +595,6 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
       return `rgb(${stops[seg].map((a, k) => Math.round(a + (stops[seg + 1][k] - a) * u)).join(',')})`;
     });
   })();
-  const steelRGB = hex(C.steel).join(',');
 
   // Máscara em tons de cinza: o brilho vira o tamanho e a cor dos pontos.
   // Coordenadas desenhadas numa prancha de 900 × 1350 e reduzidas para o canvas de 300 × 400.
@@ -670,55 +670,69 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
     return c;
   }
 
-  function portraitBox() {
+  // um desenho simples por seção, em tons de cinza como a máscara
+  function drawIcon(kind) {
+    const c = document.createElement('canvas');
+    c.width = 300; c.height = 300;
+    const g = c.getContext('2d');
+    g.fillStyle = '#000'; g.fillRect(0, 0, 300, 300);
+    const gr = g.createLinearGradient(0, 30, 0, 280);
+    gr.addColorStop(0, '#fff'); gr.addColorStop(1, '#8a8a8a');
+    g.fillStyle = gr; g.strokeStyle = gr; g.lineCap = 'round'; g.lineJoin = 'round';
+    const hole = fn => { g.save(); g.fillStyle = '#000'; fn(); g.restore(); };
+    if (kind === 'bars') {
+      [[40, 90], [102, 140], [164, 190], [226, 236]].forEach(([x, h]) => g.fillRect(x, 262 - h, 40, h));
+      g.fillRect(28, 270, 250, 6);
+    } else if (kind === 'house') {
+      g.beginPath(); g.moveTo(150, 36); g.lineTo(276, 142); g.lineTo(24, 142); g.closePath(); g.fill();
+      g.fillRect(56, 142, 188, 128);
+      hole(() => { g.fillRect(128, 190, 44, 80); g.fillRect(190, 172, 34, 34); });
+    } else if (kind === 'cap') {
+      g.beginPath(); g.moveTo(150, 60); g.lineTo(284, 116); g.lineTo(150, 172); g.lineTo(16, 116); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(78, 160); g.lineTo(78, 214); g.quadraticCurveTo(150, 262, 222, 214); g.lineTo(222, 160); g.lineTo(150, 190); g.closePath(); g.fill();
+      g.lineWidth = 8; g.beginPath(); g.moveTo(266, 124); g.lineTo(266, 204); g.stroke();
+      g.beginPath(); g.arc(266, 216, 13, 0, 7); g.fill();
+    } else if (kind === 'braces' || kind === 'at') {
+      g.font = `800 ${kind === 'at' ? 250 : 210}px ${DISPLAY}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(kind === 'at' ? '@' : '{ }', 150, kind === 'at' ? 150 : 140);
+    } else {  // pad: controle do jogo
+      g.beginPath(); g.roundRect(22, 86, 256, 132, 62); g.fill();
+      hole(() => { g.fillRect(74, 140, 56, 20); g.fillRect(92, 122, 20, 56); g.beginPath(); g.arc(196, 166, 13, 0, 7); g.arc(232, 136, 13, 0, 7); g.fill(); });
+    }
+    return c;
+  }
+  const sources = {};
+  const source = kind => sources[kind] || (sources[kind] = kind === 'photo' ? drawMask() : drawIcon(kind));
+
+  function boxFor(kind) {
     const mobile = W < 760;
-    const h = mobile ? H * 0.58 : H * 1.02;
-    const w = h * 0.75;
-    return { x: W - w * (mobile ? 0.5 : 0.56), y: mobile ? 0 : (H - h) / 2 + 14, w, h };
+    if (kind === 'photo') {
+      const h = mobile ? H * 0.5 : H * 0.9, w = h * 0.75;
+      return { x: W - w * (mobile ? 0.5 : 0.56), y: mobile ? 70 : (H - h) / 2 + 30, w, h };
+    }
+    const sz = Math.min(H * 0.42, W * 0.27);
+    return { x: Math.min(W - sz - 32, W * 0.77 - sz / 2), y: (H - sz) / 2 + 20, w: sz, h: sz };
   }
 
-  function samplePhoto() {
-    const box = portraitBox();
+  function sample(kind) {
+    const img = source(kind), box = boxFor(kind), isMask = kind === 'photo';
     const cols = Math.floor(box.w / step), rows = Math.floor(box.h / step);
     const off = document.createElement('canvas');
     off.width = cols; off.height = rows;
     const g = off.getContext('2d', { willReadFrequently: true });
-    const iw = source.width, ih = source.height;
-    const s = Math.min(cols / iw, rows / ih);
-    g.drawImage(source, (cols - iw * s) / 2, (rows - ih * s) / 2, iw * s, ih * s);
+    const s = Math.min(cols / img.width, rows / img.height);
+    g.drawImage(img, (cols - img.width * s) / 2, (rows - img.height * s) / 2, img.width * s, img.height * s);
     const d = g.getImageData(0, 0, cols, rows).data;
     const cy = box.y + box.h / 2, pts = [];
     for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      const k = (j * cols + i) * 4;
-      const l = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255;
+      const l = d[(j * cols + i) * 4] / 255;
       if (l < 0.07) continue;
-      // perspectiva: o lado que encosta na borda fica maior, como se saísse da tela
-      const u = i / cols;
+      // na máscara, o lado que encosta na borda fica maior, como se saísse da tela
+      const u = isMask ? i / cols : 0;
       const x = box.x + i * step * (1 + u * 0.16);
       const y = cy + (j * step - box.h / 2) * (1 + u * 0.12);
       if (x > W + 12) continue;
-      pts.push({ x, y, r: step * 0.5 * Math.min(1, l * 1.15) * (1 + u * 0.3), c: Math.min(LEVELS - 1, Math.floor(l * LEVELS)) });
-    }
-    return pts;
-  }
-
-  function sampleWord(word) {
-    const off = document.createElement('canvas');
-    const cols = Math.floor(W / step), rows = Math.floor(H / step);
-    off.width = cols; off.height = rows;
-    const g = off.getContext('2d', { willReadFrequently: true });
-    const mobile = W < 760;
-    const areaW = mobile ? cols * 0.9 : cols * 0.44;
-    let size = rows * (mobile ? 0.26 : 0.38);
-    g.font = `800 ${size}px ${DISPLAY}`;
-    const mw = g.measureText(word).width;
-    if (mw > areaW) { size *= areaW / mw; g.font = `800 ${size}px ${DISPLAY}`; }
-    g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(word, mobile ? cols / 2 : cols * 0.74, mobile ? rows * 0.28 : rows * 0.46);
-    const d = g.getImageData(0, 0, cols, rows).data;
-    const pts = [];
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
-      if (d[(j * cols + i) * 4 + 3] > 120) pts.push({ x: i * step + step / 2, y: j * step + step / 2, r: step * 0.42, c: 5 + Math.floor(5 * (j / rows)) % 5 });
+      pts.push({ x, y, r: step * 0.4 * Math.min(1, l * 1.15) * (1 + u * 0.3), c: Math.min(LEVELS - 1, Math.floor(l * LEVELS)) });
     }
     return pts;
   }
@@ -734,90 +748,56 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
     });
     if (reduce) particles.forEach(p => { p.x = p.tx; p.y = p.ty; p.r = p.tr; });
   }
-  function rebuild() { if (source) setTargets(shape === 'photo' ? samplePhoto() : sampleWord(shape)); }
+  function rebuild() { setTargets(sample(shape)); }
+  function morph(to) { if (to === shape) return; shape = to; rebuild(); }
 
+  function dim() { cvs.style.opacity = W < 1000 && scrollY > 60 ? '0.2' : '1'; }
   function resizeHero() {
-    const r = hero.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
-    W = r.width; H = r.height; cvs.width = W * dpr; cvs.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    step = W < 760 ? 5 : 6;
-    rebuild();
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    W = document.documentElement.clientWidth; H = innerHeight;
+    cvs.width = W * dpr; cvs.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    step = W < 760 ? 4 : 5;
+    rebuild(); dim();
   }
+  addEventListener('scroll', dim, { passive: true });
 
-  new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
   function heroFrame(t) {
     requestAnimationFrame(heroFrame);
-    if (!heroVisible || document.body.classList.contains('locked')) return;
+    if (document.body.classList.contains('locked')) return;
     const time = t * 0.001;
-    // rolagem suavizada: 0 no topo, 1 quando o hero sai da tela
-    const target = Math.max(0, Math.min(1, scrollY / (H * 0.9)));
-    scroll += (target - scroll) * (reduce ? 1 : 0.08);
-    if (!reduce && glitch <= 0 && Math.random() < 0.003) glitch = 0.12;
-    glitch -= 1 / 60;
-    const flicker = reduce ? 1 : 0.94 + 0.06 * Math.sin(time * 13) * Math.sin(time * 7.3);
-
     ctx.clearRect(0, 0, W, H);
-    // luz da borda do monitor, de onde a projeção sai
-    const glow = ctx.createRadialGradient(W, H * 0.46, 0, W, H * 0.46, H * 0.8);
-    glow.addColorStop(0, `rgba(${steelRGB},${0.16 * (1 - scroll)})`); glow.addColorStop(1, `rgba(${steelRGB},0)`);
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-
-    const R = W < 760 ? 70 : 110, R2 = R * R;
+    const R2 = 100 * 100;
     const buckets = Array.from({ length: LEVELS }, () => []);
     for (const p of particles) {
       let ax = (p.tx - p.x) * 0.055, ay = (p.ty - p.y) * 0.055;
       if (mouse.active) {
         const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
-        if (d2 < R2 && d2 > 0.01) { const f = (1 - d2 / R2) * 9 / Math.sqrt(d2); ax += dx * f; ay += dy * f; }
+        if (d2 < R2 && d2 > 0.01) { const f = (1 - d2 / R2) * 8 / Math.sqrt(d2); ax += dx * f; ay += dy * f; }
       }
-      if (!reduce) { ax += Math.sin(time * 1.1 + p.ty * 0.05) * 0.03; ay += Math.cos(time * 0.9 + p.tx * 0.05) * 0.03; }
+      if (!reduce) { ax += Math.sin(time * 0.9 + p.ty * 0.04) * 0.02; ay += Math.cos(time * 0.7 + p.tx * 0.04) * 0.02; }
       p.vx = (p.vx + ax) * 0.8; p.vy = (p.vy + ay) * 0.8;
       p.x += p.vx; p.y += p.vy;
       p.r += (p.tr - p.r) * 0.08;
-      if (p.r > 0.25) buckets[p.c].push(p);
+      if (p.r > 0.2) buckets[p.c].push(p);
     }
-
-    ctx.save();
-    // parallax: ao rolar, a máscara sobe mais devagar, recua para a borda e esmaece
-    ctx.translate(scroll * 70 + (glitch > 0 ? (Math.random() - .5) * 8 : 0), -scroll * 110 + Math.sin(time * 0.8) * (reduce ? 0 : 3));
-    ctx.globalAlpha = Math.max(0, (1 - scroll * 0.85) * flicker * (glitch > 0 ? 0.65 : 1));
+    ctx.globalAlpha = 0.6;
     buckets.forEach((b, i) => {
       if (!b.length) return;
       ctx.fillStyle = HOLO[i]; ctx.beginPath();
       for (const p of b) { ctx.moveTo(p.x + p.r, p.y); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); }
       ctx.fill();
     });
-    // faixa de luz varrendo o holograma e linhas finas de varredura
-    ctx.globalCompositeOperation = 'source-atop';
-    const sy = ((time * 90) % (H + 300)) - 150;
-    const band = ctx.createLinearGradient(0, sy - 70, 0, sy + 70);
-    band.addColorStop(0, 'rgba(255,255,255,0)'); band.addColorStop(.5, `rgba(255,255,255,${0.22 + scroll * 0.2})`); band.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = band; ctx.fillRect(0, sy - 70 - 120, W + 120, 140 + 240);
-    ctx.fillStyle = 'rgba(0,0,0,.28)';
-    for (let y = -120; y < H + 120; y += 3) ctx.fillRect(0, y, W + 120, 1);
-    ctx.restore();
-
-    if (copy) { copy.style.transform = `translateY(${-scroll * 40}px)`; copy.style.opacity = String(1 - scroll * 0.5); }
+    ctx.globalAlpha = 1;
   }
 
-  function pointer(e) { const r = cvs.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.active = true; }
-  hero.addEventListener('pointermove', pointer);
-  hero.addEventListener('pointerdown', pointer);
-  hero.addEventListener('pointerleave', () => { mouse.active = false; });
-  cvs.addEventListener('click', e => {
-    pointer(e);
-    for (const p of particles) {
-      const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy) || 1, f = 40 * Math.min(1, 220 / d);
-      p.vx += dx / d * f * (0.5 + Math.random()); p.vy += dy / d * f * (0.5 + Math.random());
-    }
+  addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+  document.documentElement.addEventListener('mouseleave', () => { mouse.active = false; });
+  // cada linha do índice dá uma forma às partículas; ao sair, a máscara volta
+  document.querySelectorAll('[data-shape]').forEach(el => {
+    const on = () => { if (W >= 760) morph(el.dataset.shape); }, offFn = () => morph('photo');
+    el.addEventListener('mouseenter', on); el.addEventListener('focus', on);
+    el.addEventListener('mouseleave', offFn); el.addEventListener('blur', offFn);
   });
-  const chips = [...document.querySelectorAll('.chip')];
-  function morph(to) {
-    shape = to;
-    chips.forEach(c => c.setAttribute('aria-pressed', String(c.dataset.shape === to)));
-    rebuild();
-  }
-  chips.forEach(c => c.addEventListener('click', () => morph(c.dataset.shape)));
-  source = drawMask();
 
   // Modo privacidade: o hero nasce mascarado, como dado pessoal sob a LGPD, e se revela com consentimento
   const piis = [...copy.querySelectorAll('.pii')], sw = $('privacy');
@@ -855,15 +835,6 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   });
   if (reduce) setPrivacy(false);
   else { setPrivacy(true); setTimeout(() => setPrivacy(false, true), 1500); }
-
-  // seções entram suavemente ao rolar
-  if (!reduce && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.remove('pending'); io.unobserve(e.target); } }), { threshold: 0.12 });
-    document.querySelectorAll('.explore-head, .game-card, .board-wrap, footer').forEach(el => {
-      el.classList.add('rv');
-      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pending'); io.observe(el); }
-    });
-  }
 
   /* ---------- Diagrama ER ---------- */
   const board = $('board'), relSvg = $('rels');
@@ -1217,7 +1188,7 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
   function gameFrame(t) {
     requestAnimationFrame(gameFrame);
     const dt = Math.min(0.033, (t - last) / 1000 || 0); last = t;
-    if (!stageVisible || document.hidden || document.body.classList.contains('locked')) return;
+    if (!stageVisible || document.hidden) return;
     update(dt); render();
   }
 
@@ -1261,6 +1232,8 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
     requestAnimationFrame(() => requestAnimationFrame(() => scr.classList.add('open')));
     document.body.classList.add('locked');
     current = scr;
+    // o jogo e o diagrama só têm tamanho depois que a tela aparece
+    if (id === 'playground') requestAnimationFrame(() => { if (G.state === 'idle') G.px = G.tx = 0; sizeStage(); mode = ''; place(); });
     typeQuery(scr);
     scr.querySelector('.back').focus({ preventScroll: true });
     try { history.replaceState(null, '', '#' + id); } catch {}
@@ -1326,23 +1299,6 @@ footer .wrap { padding-block: 32px; display: flex; justify-content: space-betwee
       requestAnimationFrame(follow);
     })();
   }
-
-  // cada bloco com data-tone pinta a página quando cruza o meio da tela
-  const KEYS = { bg: '--bg', bg2: '--bg-2', bg3: '--bg-3', line: '--line', fg: '--fg', muted: '--muted', steel: '--steel', sand: '--sand', ok: '--ok', err: '--err' };
-  let toneTimer = 0;
-  function refreshTokens() {
-    const cs = getComputedStyle(document.documentElement);
-    for (const k in KEYS) C[k] = cs.getPropertyValue(KEYS[k]).trim() || C[k];
-    hud();
-  }
-  const toneIO = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
-    const tone = e.target.dataset.tone;
-    if (document.documentElement.dataset.tone === tone) return;
-    if (tone === 'dark') delete document.documentElement.dataset.tone; else document.documentElement.dataset.tone = tone;
-    clearTimeout(toneTimer); toneTimer = setTimeout(refreshTokens, reduce ? 0 : 950);
-  }), { rootMargin: '-50% 0px -50% 0px' });
-  document.querySelectorAll('[data-tone]').forEach(el => toneIO.observe(el));
 
   let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { resizeHero(); place(); sizeStage(); }, 150); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
